@@ -192,7 +192,7 @@ class AdminDashboardView extends GetView<AdminController> {
   Widget _buildTopHeader(bool isDesktop) {
     return Container(
       height: 64,
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 24 : 12),
       decoration: const BoxDecoration(
         color: AppColors.pureWhite,
         border: Border(bottom: BorderSide(color: AppColors.borderSubtle)),
@@ -201,40 +201,45 @@ class AdminDashboardView extends GetView<AdminController> {
         children: [
           if (!isDesktop)
             IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {},
+              icon: const Icon(Icons.arrow_back),
+              tooltip: 'Back',
+              onPressed: () => Get.back(),
             ),
-          Text(
-            'Institute Governance & Operations',
-            style: GoogleFonts.outfit(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: AppColors.deepNavy,
+          Expanded(
+            child: Text(
+              isDesktop ? 'Institute Governance & Operations' : 'Admin Portal',
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.outfit(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.deepNavy,
+              ),
             ),
           ),
-          const Spacer(),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: AppColors.lightBlueBackground,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.verified_user, size: 16, color: AppColors.primaryRoyalBlue),
-                const SizedBox(width: 6),
-                Text(
-                  'Super Admin: Active',
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primaryRoyalBlue,
+          if (isDesktop) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.lightBlueBackground,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.verified_user, size: 16, color: AppColors.primaryRoyalBlue),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Super Admin: Active',
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primaryRoyalBlue,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
+            const SizedBox(width: 12),
+          ],
           IconButton(
             icon: const Icon(Icons.refresh, color: AppColors.textSecondary),
             tooltip: 'Reload Data',
@@ -293,101 +298,110 @@ class AdminDashboardView extends GetView<AdminController> {
           const SizedBox(height: 28),
 
           // Recent Admission Enquiries & Outstanding Invoices
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Left: Recent Enquiries
-              Expanded(
-                flex: 3,
-                child: RadianceCard(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Recent Admission Inquiries',
-                            style: GoogleFonts.outfit(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.deepNavy,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () => controller.selectedNavIndex.value = 1,
-                            child: const Text('View All CRM'),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: controller.enquiries.take(3).length,
-                        separatorBuilder: (_, __) => const Divider(),
-                        itemBuilder: (context, index) {
-                          final enq = controller.enquiries[index];
-                          return ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: CircleAvatar(
-                              backgroundColor: AppColors.lightBlueBackground,
-                              child: Text(
-                                enq.studentName[0],
-                                style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: AppColors.primaryRoyalBlue),
-                              ),
-                            ),
-                            title: Text(
-                              '${enq.studentName} (Class ${enq.classLevel})',
-                              style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600),
-                            ),
-                            subtitle: Text(
-                              'Guardian: ${enq.guardianName} • Phone: ${enq.contactNumber}',
-                              style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary),
-                            ),
-                            trailing: StatusBadge(status: enq.status),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(width: 20),
-
-              // Right: Fee Summary
-              Expanded(
-                flex: 2,
-                child: RadianceCard(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          LayoutBuilder(builder: (context, constraints) {
+            final isWide = constraints.maxWidth > 750;
+            final enquiriesCard = RadianceCard(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Fee Reconciliation',
+                        'Recent Admission Inquiries',
                         style: GoogleFonts.outfit(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color: AppColors.deepNavy,
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      _buildLedgerRow('Verified Revenue', CurrencyFormatter.formatPaise(controller.totalRevenuePaise), AppColors.success),
-                      const SizedBox(height: 10),
-                      _buildLedgerRow('Pending Dues', CurrencyFormatter.formatPaise(controller.totalOutstandingPaise), AppColors.error),
-                      const Divider(height: 24),
-                      RadianceButton(
-                        label: 'Issue Custom Invoice',
-                        icon: Icons.add_card,
-                        onPressed: () => _showInvoiceCreationDialog(Get.context!),
+                      TextButton(
+                        onPressed: () => controller.selectedNavIndex.value = 1,
+                        child: const Text('View All CRM'),
                       ),
                     ],
                   ),
-                ),
+                  const SizedBox(height: 12),
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: controller.enquiries.take(3).length,
+                    separatorBuilder: (_, __) => const Divider(),
+                    itemBuilder: (context, index) {
+                      final enq = controller.enquiries[index];
+                      return ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: CircleAvatar(
+                          backgroundColor: AppColors.lightBlueBackground,
+                          child: Text(
+                            enq.studentName[0],
+                            style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: AppColors.primaryRoyalBlue),
+                          ),
+                        ),
+                        title: Text(
+                          '${enq.studentName} (Class ${enq.classLevel})',
+                          style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text(
+                          'Guardian: ${enq.guardianName} • Phone: ${enq.contactNumber}',
+                          style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary),
+                        ),
+                        trailing: StatusBadge(status: enq.status),
+                      );
+                    },
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+
+            final invoicesCard = RadianceCard(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Fee Reconciliation',
+                    style: GoogleFonts.outfit(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.deepNavy,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildLedgerRow('Verified Revenue', CurrencyFormatter.formatPaise(controller.totalRevenuePaise), AppColors.success),
+                  const SizedBox(height: 10),
+                  _buildLedgerRow('Pending Dues', CurrencyFormatter.formatPaise(controller.totalOutstandingPaise), AppColors.error),
+                  const Divider(height: 24),
+                  RadianceButton(
+                    label: 'Issue Custom Invoice',
+                    icon: Icons.add_card,
+                    onPressed: () => _showInvoiceCreationDialog(Get.context!),
+                  ),
+                ],
+              ),
+            );
+
+            if (!isWide) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  enquiriesCard,
+                  const SizedBox(height: 20),
+                  invoicesCard,
+                ],
+              );
+            }
+
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(flex: 3, child: enquiriesCard),
+                const SizedBox(width: 20),
+                Expanded(flex: 2, child: invoicesCard),
+              ],
+            );
+          }),
         ],
       ),
     );
@@ -417,40 +431,43 @@ class AdminDashboardView extends GetView<AdminController> {
 
           RadianceCard(
             padding: const EdgeInsets.all(16),
-            child: DataTable(
-              columns: const [
-                DataColumn(label: Text('Ref ID')),
-                DataColumn(label: Text('Student')),
-                DataColumn(label: Text('Class')),
-                DataColumn(label: Text('Guardian & Phone')),
-                DataColumn(label: Text('Status')),
-                DataColumn(label: Text('Action')),
-              ],
-              rows: controller.enquiries.map((enq) {
-                return DataRow(cells: [
-                  DataCell(Text(enq.enquiryId, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600))),
-                  DataCell(Text(enq.studentName, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600))),
-                  DataCell(Text('Class ${enq.classLevel}', style: GoogleFonts.inter(fontSize: 13))),
-                  DataCell(Text('${enq.guardianName} (${enq.contactNumber})', style: GoogleFonts.inter(fontSize: 12))),
-                  DataCell(StatusBadge(status: enq.status)),
-                  DataCell(
-                    DropdownButton<String>(
-                      value: enq.status,
-                      underline: const SizedBox.shrink(),
-                      items: const [
-                        DropdownMenuItem(value: 'NEW', child: Text('NEW')),
-                        DropdownMenuItem(value: 'CONTACTED', child: Text('CONTACTED')),
-                        DropdownMenuItem(value: 'VISIT_SCHEDULED', child: Text('VISIT SCHEDULED')),
-                        DropdownMenuItem(value: 'ADMITTED', child: Text('ADMITTED')),
-                        DropdownMenuItem(value: 'CLOSED', child: Text('CLOSED')),
-                      ],
-                      onChanged: (val) {
-                        if (val != null) controller.updateEnquiryStatus(enq.enquiryId, val);
-                      },
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: const [
+                  DataColumn(label: Text('Ref ID')),
+                  DataColumn(label: Text('Student')),
+                  DataColumn(label: Text('Class')),
+                  DataColumn(label: Text('Guardian & Phone')),
+                  DataColumn(label: Text('Status')),
+                  DataColumn(label: Text('Action')),
+                ],
+                rows: controller.enquiries.map((enq) {
+                  return DataRow(cells: [
+                    DataCell(Text(enq.enquiryId, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600))),
+                    DataCell(Text(enq.studentName, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600))),
+                    DataCell(Text('Class ${enq.classLevel}', style: GoogleFonts.inter(fontSize: 13))),
+                    DataCell(Text('${enq.guardianName} (${enq.contactNumber})', style: GoogleFonts.inter(fontSize: 12))),
+                    DataCell(StatusBadge(status: enq.status)),
+                    DataCell(
+                      DropdownButton<String>(
+                        value: enq.status,
+                        underline: const SizedBox.shrink(),
+                        items: const [
+                          DropdownMenuItem(value: 'NEW', child: Text('NEW')),
+                          DropdownMenuItem(value: 'CONTACTED', child: Text('CONTACTED')),
+                          DropdownMenuItem(value: 'VISIT_SCHEDULED', child: Text('VISIT SCHEDULED')),
+                          DropdownMenuItem(value: 'ADMITTED', child: Text('ADMITTED')),
+                          DropdownMenuItem(value: 'CLOSED', child: Text('CLOSED')),
+                        ],
+                        onChanged: (val) {
+                          if (val != null) controller.updateEnquiryStatus(enq.enquiryId, val);
+                        },
+                      ),
                     ),
-                  ),
-                ]);
-              }).toList(),
+                  ]);
+                }).toList(),
+              ),
             ),
           ),
         ],
@@ -483,27 +500,30 @@ class AdminDashboardView extends GetView<AdminController> {
 
           RadianceCard(
             padding: const EdgeInsets.all(16),
-            child: DataTable(
-              columns: const [
-                DataColumn(label: Text('Student ID')),
-                DataColumn(label: Text('Full Name')),
-                DataColumn(label: Text('Roll No')),
-                DataColumn(label: Text('Class Level')),
-                DataColumn(label: Text('DOB')),
-                DataColumn(label: Text('Emergency Contact')),
-                DataColumn(label: Text('Linked Parents')),
-              ],
-              rows: controller.students.map((s) {
-                return DataRow(cells: [
-                  DataCell(Text(s.studentId, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600))),
-                  DataCell(Text(s.fullName, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600))),
-                  DataCell(Text(s.rollNumber, style: GoogleFonts.inter(fontSize: 13))),
-                  DataCell(Text('Class ${s.classLevel}', style: GoogleFonts.inter(fontSize: 13))),
-                  DataCell(Text(s.dateOfBirth, style: GoogleFonts.inter(fontSize: 12))),
-                  DataCell(Text(s.emergencyContact, style: GoogleFonts.inter(fontSize: 12))),
-                  DataCell(Text('${s.parentUids.length} linked', style: GoogleFonts.inter(fontSize: 12, color: AppColors.primaryRoyalBlue))),
-                ]);
-              }).toList(),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: const [
+                  DataColumn(label: Text('Student ID')),
+                  DataColumn(label: Text('Full Name')),
+                  DataColumn(label: Text('Roll No')),
+                  DataColumn(label: Text('Class Level')),
+                  DataColumn(label: Text('DOB')),
+                  DataColumn(label: Text('Emergency Contact')),
+                  DataColumn(label: Text('Linked Parents')),
+                ],
+                rows: controller.students.map((s) {
+                  return DataRow(cells: [
+                    DataCell(Text(s.studentId, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600))),
+                    DataCell(Text(s.fullName, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600))),
+                    DataCell(Text(s.rollNumber, style: GoogleFonts.inter(fontSize: 13))),
+                    DataCell(Text('Class ${s.classLevel}', style: GoogleFonts.inter(fontSize: 13))),
+                    DataCell(Text(s.dateOfBirth, style: GoogleFonts.inter(fontSize: 12))),
+                    DataCell(Text(s.emergencyContact, style: GoogleFonts.inter(fontSize: 12))),
+                    DataCell(Text('${s.parentUids.length} linked', style: GoogleFonts.inter(fontSize: 12, color: AppColors.primaryRoyalBlue))),
+                  ]);
+                }).toList(),
+              ),
             ),
           ),
         ],
@@ -601,29 +621,32 @@ class AdminDashboardView extends GetView<AdminController> {
           const SizedBox(height: 16),
           RadianceCard(
             padding: const EdgeInsets.all(16),
-            child: DataTable(
-              columns: const [
-                DataColumn(label: Text('Invoice ID')),
-                DataColumn(label: Text('Student')),
-                DataColumn(label: Text('Period')),
-                DataColumn(label: Text('Amount Due')),
-                DataColumn(label: Text('Paid')),
-                DataColumn(label: Text('Balance')),
-                DataColumn(label: Text('Due Date')),
-                DataColumn(label: Text('Status')),
-              ],
-              rows: controller.invoices.map((inv) {
-                return DataRow(cells: [
-                  DataCell(Text(inv.invoiceId, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600))),
-                  DataCell(Text(inv.studentName, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600))),
-                  DataCell(Text(inv.period, style: GoogleFonts.inter(fontSize: 12))),
-                  DataCell(Text(inv.formattedAmountDue, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600))),
-                  DataCell(Text(inv.formattedAmountPaid, style: GoogleFonts.inter(fontSize: 12, color: AppColors.success))),
-                  DataCell(Text(inv.formattedBalanceDue, style: GoogleFonts.inter(fontSize: 12, color: AppColors.error))),
-                  DataCell(Text(inv.dueDate, style: GoogleFonts.inter(fontSize: 12))),
-                  DataCell(StatusBadge(status: inv.status)),
-                ]);
-              }).toList(),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: const [
+                  DataColumn(label: Text('Invoice ID')),
+                  DataColumn(label: Text('Student')),
+                  DataColumn(label: Text('Period')),
+                  DataColumn(label: Text('Amount Due')),
+                  DataColumn(label: Text('Paid')),
+                  DataColumn(label: Text('Balance')),
+                  DataColumn(label: Text('Due Date')),
+                  DataColumn(label: Text('Status')),
+                ],
+                rows: controller.invoices.map((inv) {
+                  return DataRow(cells: [
+                    DataCell(Text(inv.invoiceId, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600))),
+                    DataCell(Text(inv.studentName, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600))),
+                    DataCell(Text(inv.period, style: GoogleFonts.inter(fontSize: 12))),
+                    DataCell(Text(inv.formattedAmountDue, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600))),
+                    DataCell(Text(inv.formattedAmountPaid, style: GoogleFonts.inter(fontSize: 12, color: AppColors.success))),
+                    DataCell(Text(inv.formattedBalanceDue, style: GoogleFonts.inter(fontSize: 12, color: AppColors.error))),
+                    DataCell(Text(inv.dueDate, style: GoogleFonts.inter(fontSize: 12))),
+                    DataCell(StatusBadge(status: inv.status)),
+                  ]);
+                }).toList(),
+              ),
             ),
           ),
         ],

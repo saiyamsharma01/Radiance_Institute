@@ -22,11 +22,15 @@ import 'modules/student/views/student_homework_view.dart';
 import 'modules/student/views/student_tests_view.dart';
 import 'modules/teacher/controllers/teacher_controller.dart';
 import 'modules/teacher/views/create_homework_view.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'modules/teacher/views/mark_attendance_view.dart';
 import 'modules/teacher/views/teacher_dashboard_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Load bundled Google Fonts from assets without attempting runtime network calls
+  GoogleFonts.config.allowRuntimeFetching = false;
 
   // Initialize Global Singletons & Repositories
   final IAuthRepository authRepo = AuthRepository();
