@@ -18,6 +18,7 @@ class AdminDashboardView extends GetView<AdminController> {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
+      drawer: isDesktop ? null : Drawer(child: _buildSidebar(isDrawer: true)),
       body: Row(
         children: [
           // Desktop Navigation Sidebar
@@ -59,7 +60,7 @@ class AdminDashboardView extends GetView<AdminController> {
       bottomNavigationBar: isDesktop
           ? null
           : Obx(() => BottomNavigationBar(
-                currentIndex: controller.selectedNavIndex.value.clamp(0, 4),
+                currentIndex: controller.selectedNavIndex.value > 4 ? 0 : controller.selectedNavIndex.value,
                 onTap: (index) => controller.selectedNavIndex.value = index,
                 selectedItemColor: AppColors.primaryRoyalBlue,
                 unselectedItemColor: AppColors.textMuted,
@@ -75,81 +76,86 @@ class AdminDashboardView extends GetView<AdminController> {
     );
   }
 
-  Widget _buildSidebar() {
+  Widget _buildSidebar({bool isDrawer = false}) {
     return Container(
-      width: 250,
+      width: isDrawer ? 280 : 250,
       color: AppColors.deepNavy,
-      child: Column(
-        children: [
-          // Institute Logo & Header
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-            child: Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: const BoxDecoration(
-                    color: AppColors.pureWhite,
-                    shape: BoxShape.circle,
+      child: SafeArea(
+        child: Column(
+          children: [
+            // Institute Logo & Header
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: const BoxDecoration(
+                      color: AppColors.pureWhite,
+                      shape: BoxShape.circle,
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Image.asset('assets/images/radiance_logo.jpg', fit: BoxFit.cover),
                   ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Image.asset('assets/images/radiance_logo.jpg', fit: BoxFit.cover),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Radiance Institute',
-                        style: GoogleFonts.outfit(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.pureWhite,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Radiance Institute',
+                          style: GoogleFonts.outfit(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.pureWhite,
+                          ),
                         ),
-                      ),
-                      Text(
-                        'Admin Dashboard',
-                        style: GoogleFonts.inter(
-                          fontSize: 11,
-                          color: AppColors.accentGold,
+                        Text(
+                          'Admin Dashboard',
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            color: AppColors.accentGold,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const Divider(color: Colors.white24, height: 1),
-          const SizedBox(height: 12),
+            const Divider(color: Colors.white24, height: 1),
+            const SizedBox(height: 12),
 
-          // Sidebar Navigation Items
-          _buildSidebarNavItem(0, 'Overview', Icons.dashboard_outlined),
-          _buildSidebarNavItem(1, 'Admissions CRM', Icons.contact_mail_outlined, badgeCount: controller.newEnquiriesCount),
-          _buildSidebarNavItem(2, 'Student Accounts', Icons.people_outline),
-          _buildSidebarNavItem(3, 'Batches & Subjects', Icons.layers_outlined),
-          _buildSidebarNavItem(4, 'Fees & Invoicing', Icons.account_balance_wallet_outlined),
-          _buildSidebarNavItem(5, 'Audit Logs', Icons.security_outlined),
+            // Sidebar Navigation Items
+            _buildSidebarNavItem(0, 'Overview', Icons.dashboard_outlined, isDrawer: isDrawer),
+            _buildSidebarNavItem(1, 'Admissions CRM', Icons.contact_mail_outlined, badgeCount: controller.newEnquiriesCount, isDrawer: isDrawer),
+            _buildSidebarNavItem(2, 'Student Accounts', Icons.people_outline, isDrawer: isDrawer),
+            _buildSidebarNavItem(3, 'Batches & Subjects', Icons.layers_outlined, isDrawer: isDrawer),
+            _buildSidebarNavItem(4, 'Fees & Invoicing', Icons.account_balance_wallet_outlined, isDrawer: isDrawer),
+            _buildSidebarNavItem(5, 'Audit Logs', Icons.security_outlined, isDrawer: isDrawer),
 
-          const Spacer(),
-          const Divider(color: Colors.white24, height: 1),
-          ListTile(
-            leading: const Icon(Icons.logout, color: Colors.white70, size: 20),
-            title: Text(
-              'Sign Out',
-              style: GoogleFonts.inter(fontSize: 13, color: Colors.white70),
+            const Spacer(),
+            const Divider(color: Colors.white24, height: 1),
+            ListTile(
+              leading: const Icon(Icons.logout, color: Colors.white70, size: 20),
+              title: Text(
+                'Sign Out',
+                style: GoogleFonts.inter(fontSize: 13, color: Colors.white70),
+              ),
+              onTap: () {
+                if (isDrawer) Get.back();
+                Get.find<AuthController>().logout();
+              },
             ),
-            onTap: () => Get.find<AuthController>().logout(),
-          ),
-          const SizedBox(height: 12),
-        ],
+            const SizedBox(height: 12),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildSidebarNavItem(int index, String title, IconData icon, {int badgeCount = 0}) {
+  Widget _buildSidebarNavItem(int index, String title, IconData icon, {int badgeCount = 0, bool isDrawer = false}) {
     return Obx(() {
       final isSelected = controller.selectedNavIndex.value == index;
 
@@ -183,7 +189,10 @@ class AdminDashboardView extends GetView<AdminController> {
                   ),
                 )
               : null,
-          onTap: () => controller.selectedNavIndex.value = index,
+          onTap: () {
+            controller.selectedNavIndex.value = index;
+            if (isDrawer) Get.back();
+          },
         ),
       );
     });
@@ -192,19 +201,28 @@ class AdminDashboardView extends GetView<AdminController> {
   Widget _buildTopHeader(bool isDesktop) {
     return Container(
       height: 64,
-      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 24 : 12),
+      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 24 : 8),
       decoration: const BoxDecoration(
         color: AppColors.pureWhite,
         border: Border(bottom: BorderSide(color: AppColors.borderSubtle)),
       ),
       child: Row(
         children: [
-          if (!isDesktop)
+          if (!isDesktop) ...[
             IconButton(
-              icon: const Icon(Icons.arrow_back),
-              tooltip: 'Back',
+              icon: const Icon(Icons.arrow_back, color: AppColors.deepNavy),
+              tooltip: 'Exit Admin Portal',
               onPressed: () => Get.back(),
             ),
+            Builder(
+              builder: (ctx) => IconButton(
+                icon: const Icon(Icons.menu, color: AppColors.deepNavy),
+                tooltip: 'All Sections',
+                onPressed: () => Scaffold.of(ctx).openDrawer(),
+              ),
+            ),
+          ],
+          const SizedBox(width: 4),
           Expanded(
             child: Text(
               isDesktop ? 'Institute Governance & Operations' : 'Admin Portal',
@@ -262,11 +280,11 @@ class AdminDashboardView extends GetView<AdminController> {
             final isWide = constraints.maxWidth > 800;
             return GridView.count(
               crossAxisCount: isWide ? 4 : 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              childAspectRatio: isWide ? 1.6 : 1.3,
+              childAspectRatio: isWide ? 1.6 : 1.15,
               children: [
                 _buildKpiCard(
                   icon: Icons.people_alt_outlined,
@@ -305,8 +323,11 @@ class AdminDashboardView extends GetView<AdminController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 8,
+                    runSpacing: 4,
                     children: [
                       Text(
                         'Recent Admission Inquiries',
@@ -318,6 +339,11 @@ class AdminDashboardView extends GetView<AdminController> {
                       ),
                       TextButton(
                         onPressed: () => controller.selectedNavIndex.value = 1,
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          minimumSize: const Size(50, 30),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
                         child: const Text('View All CRM'),
                       ),
                     ],
@@ -341,10 +367,14 @@ class AdminDashboardView extends GetView<AdminController> {
                         ),
                         title: Text(
                           '${enq.studentName} (Class ${enq.classLevel})',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600),
                         ),
                         subtitle: Text(
                           'Guardian: ${enq.guardianName} • Phone: ${enq.contactNumber}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary),
                         ),
                         trailing: StatusBadge(status: enq.status),
@@ -414,16 +444,26 @@ class AdminDashboardView extends GetView<AdminController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 12,
+            runSpacing: 8,
             children: [
               Text(
                 'Admission Enquiries & Pipeline CRM',
                 style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.deepNavy),
               ),
-              Text(
-                'Total: ${controller.enquiries.length} Enquiries',
-                style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary, fontWeight: FontWeight.w600),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.lightBlueBackground,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  'Total: ${controller.enquiries.length} Enquiries',
+                  style: GoogleFonts.inter(fontSize: 12, color: AppColors.primaryRoyalBlue, fontWeight: FontWeight.w600),
+                ),
               ),
             ],
           ),
@@ -482,8 +522,11 @@ class AdminDashboardView extends GetView<AdminController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 12,
+            runSpacing: 10,
             children: [
               Text(
                 'Student Accounts & Enrolments',
@@ -604,8 +647,11 @@ class AdminDashboardView extends GetView<AdminController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 12,
+            runSpacing: 10,
             children: [
               Text(
                 'Fee Invoices & Ledger',
@@ -719,29 +765,39 @@ class AdminDashboardView extends GetView<AdminController> {
     required Color color,
   }) {
     return RadianceCard(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(color: color.withOpacity(0.12), borderRadius: BorderRadius.circular(8)),
-            child: Icon(icon, size: 20, color: color),
+            child: Icon(icon, size: 18, color: color),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                value,
-                style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.deepNavy),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                label,
-                style: GoogleFonts.inter(fontSize: 12, color: AppColors.textMuted, fontWeight: FontWeight.w500),
-              ),
-            ],
+          const SizedBox(height: 6),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    value,
+                    style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.deepNavy),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.inter(fontSize: 11, color: AppColors.textMuted, fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -752,7 +808,8 @@ class AdminDashboardView extends GetView<AdminController> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
+        Expanded(child: Text(label, style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary))),
+        const SizedBox(width: 8),
         Text(value, style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w700, color: color)),
       ],
     );
@@ -795,10 +852,17 @@ class AdminDashboardView extends GetView<AdminController> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Obx(() => DropdownButtonFormField<String>(
+                    isExpanded: true,
                     value: controller.invoiceStudentId.value.isNotEmpty ? controller.invoiceStudentId.value : null,
                     decoration: const InputDecoration(labelText: 'Select Student'),
                     items: controller.students.map((s) {
-                      return DropdownMenuItem(value: s.studentId, child: Text('${s.fullName} (${s.rollNumber})'));
+                      return DropdownMenuItem(
+                        value: s.studentId,
+                        child: Text(
+                          '${s.fullName} (${s.rollNumber})',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      );
                     }).toList(),
                     onChanged: (val) {
                       if (val != null) controller.invoiceStudentId.value = val;
