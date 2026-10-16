@@ -1,0 +1,38 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // 1. Homework Submissions:
+    // Students can upload PDF or images up to 15MB to their own submission path
+    match /submissions/{homeworkId}/{studentId}/{fileName} {
+      allow read: if request.auth != null && (
+        request.auth.token.role == 'admin' ||
+        request.auth.token.role == 'teacher' ||
+        request.auth.uid == studentId
+      );
+      allow write: if request.auth != null &&
+        request.auth.uid == studentId &&
+        request.resource.size < 15 * 1024 * 1024 &&
+        (
+          request.resource.contentType.matches('application/pdf') ||
+          request.resource.contentType.matches('image/.*')
+        );
+    }
+
+    // 2. Study Materials & Syllabus Guides:
+    // Authenticated users can read; Teachers and Admins can upload up to 50MB
+    match /study_materials/{batchId}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && (
+        request.auth.token.role == 'admin' ||
+        request.auth.token.role == 'teacher'
+      ) && request.resource.size < 50 * 1024 * 1024;
+    }
+
+    // 3. Payment Receipts:
+    // Read-only for authenticated students/parents; Writes restricted to Cloud Functions
+    match /receipts/{receiptId}.pdf {
+      allow read: if request.auth != null;
+      allow write: if false; // Only Cloud Functions Admin SDK
+    }
+  }
+}
