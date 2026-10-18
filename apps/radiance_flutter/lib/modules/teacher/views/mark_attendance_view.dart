@@ -13,98 +13,177 @@ class MarkAttendanceView extends GetView<TeacherController> {
 
   @override
   Widget build(BuildContext context) {
-    final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
     final batch = controller.selectedBatch.value;
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
       appBar: RadianceAppBar(
         title: 'Mark Attendance',
-        subtitle: '${batch?.name ?? ''} • $today',
+        subtitle: batch?.name ?? 'Class Attendance Session',
+        actions: [
+          TextButton.icon(
+            icon: const Icon(Icons.done_all, color: AppColors.pureWhite, size: 18),
+            label: Text('All Present', style: GoogleFonts.inter(color: AppColors.pureWhite, fontWeight: FontWeight.w600, fontSize: 12)),
+            onPressed: controller.markAllPresent,
+          ),
+        ],
       ),
       body: Obx(() {
         final students = controller.batchStudents;
+        final selectedDate = controller.selectedAttendanceDate.value;
+        final presentCount = controller.attendanceStatuses.values.where((s) => s == 'PRESENT').length;
+        final absentCount = controller.attendanceStatuses.values.where((s) => s == 'ABSENT').length;
+        final lateCount = controller.attendanceStatuses.values.where((s) => s == 'LATE').length;
 
         return Column(
           children: [
-            // Deterministic Session Banner
+            // Date Picker & Session Banner
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              color: AppColors.lightBlueBackground,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              color: AppColors.pureWhite,
               child: Row(
                 children: [
-                  const Icon(Icons.info_outline, size: 20, color: AppColors.primaryRoyalBlue),
-                  const SizedBox(width: 10),
                   Expanded(
-                    child: Text(
-                      'Session Key: ${batch?.batchId}_$today (Unique & Deterministic)',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.deepNavy,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Session Date',
+                          style: GoogleFonts.inter(fontSize: 11, color: AppColors.textMuted, fontWeight: FontWeight.w600),
+                        ),
+                        Text(
+                          selectedDate,
+                          style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.deepNavy),
+                        ),
+                      ],
                     ),
+                  ),
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      minimumSize: const Size(80, 36),
+                    ),
+                    icon: const Icon(Icons.calendar_month, size: 18),
+                    label: const Text('Change Date'),
+                    onPressed: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2025),
+                        lastDate: DateTime(2027),
+                      );
+                      if (picked != null) {
+                        controller.selectedAttendanceDate.value = DateFormat('yyyy-MM-dd').format(picked);
+                      }
+                    },
                   ),
                 ],
               ),
             ),
 
-            Expanded(
-              child: ListView.separated(
-                padding: const EdgeInsets.all(20),
-                itemCount: students.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
-                itemBuilder: (context, index) {
-                  final s = students[index];
-                  final currentStatus = controller.attendanceStatuses[s.studentId] ?? 'PRESENT';
-
-                  return RadianceCard(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                s.fullName,
-                                style: GoogleFonts.inter(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.deepNavy,
-                                ),
-                              ),
-                              Text(
-                                'Roll: ${s.rollNumber}',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  color: AppColors.textSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Present / Absent / Late chips
-                        _buildStatusChoice(s.studentId, 'PRESENT', currentStatus, AppColors.success),
-                        const SizedBox(width: 6),
-                        _buildStatusChoice(s.studentId, 'ABSENT', currentStatus, AppColors.error),
-                        const SizedBox(width: 6),
-                        _buildStatusChoice(s.studentId, 'LATE', currentStatus, AppColors.warning),
-                      ],
-                    ),
-                  );
-                },
+            // Live Attendance Stats Counter Strip
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              color: AppColors.lightBlueBackground.withOpacity(0.5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildStatSummary('Total', '${students.length}', AppColors.deepNavy),
+                  _buildStatSummary('Present', '$presentCount', AppColors.success),
+                  _buildStatSummary('Absent', '$absentCount', AppColors.error),
+                  _buildStatSummary('Late', '$lateCount', AppColors.warning),
+                ],
               ),
             ),
+            const Divider(height: 1, color: AppColors.borderSubtle),
 
-            // Submit Button
-            Padding(
-              padding: const EdgeInsets.all(20),
+            // Student Roster
+            Expanded(
+              child: students.isEmpty
+                  ? Center(
+                      child: Text(
+                        'No students enrolled in this batch.',
+                        style: GoogleFonts.inter(fontSize: 14, color: AppColors.textSecondary),
+                      ),
+                    )
+                  : ListView.separated(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      itemCount: students.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 10),
+                      itemBuilder: (context, index) {
+                        final s = students[index];
+                        final currentStatus = controller.attendanceStatuses[s.studentId] ?? 'PRESENT';
+
+                        return RadianceCard(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: AppColors.lightBlueBackground,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    s.fullName.isNotEmpty ? s.fullName[0] : 'S',
+                                    style: GoogleFonts.outfit(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.primaryRoyalBlue,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      s.fullName,
+                                      style: GoogleFonts.inter(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppColors.deepNavy,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Roll: ${s.rollNumber} • Class ${s.classLevel}',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 11,
+                                        color: AppColors.textSecondary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              // Present / Absent / Late Choice Buttons
+                              _buildStatusButton(s.studentId, 'PRESENT', 'P', currentStatus, AppColors.success),
+                              const SizedBox(width: 6),
+                              _buildStatusButton(s.studentId, 'ABSENT', 'A', currentStatus, AppColors.error),
+                              const SizedBox(width: 6),
+                              _buildStatusButton(s.studentId, 'LATE', 'L', currentStatus, AppColors.warning),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+            ),
+
+            // Submit Bar
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                color: AppColors.pureWhite,
+                border: Border(top: BorderSide(color: AppColors.borderSubtle)),
+              ),
               child: RadianceButton(
-                label: 'Save & Finalize Attendance',
-                icon: Icons.check,
+                label: 'Save & Finalize Attendance ($selectedDate)',
+                icon: Icons.check_circle_outline,
                 isLoading: controller.isLoading.value,
-                onPressed: () => controller.submitBatchAttendance(today),
+                onPressed: () => controller.submitBatchAttendance(selectedDate),
               ),
             ),
           ],
@@ -113,24 +192,50 @@ class MarkAttendanceView extends GetView<TeacherController> {
     );
   }
 
-  Widget _buildStatusChoice(String studentId, String status, String current, Color color) {
+  Widget _buildStatSummary(String label, String value, Color color) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w800, color: color),
+        ),
+        Text(
+          label,
+          style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textMuted),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatusButton(String studentId, String status, String label, String current, Color color) {
     final isSelected = current == status;
 
     return InkWell(
       onTap: () => controller.toggleAttendance(studentId, status),
-      borderRadius: BorderRadius.circular(6),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      borderRadius: BorderRadius.circular(8),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        width: 36,
+        height: 36,
         decoration: BoxDecoration(
-          color: isSelected ? color : color.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(6),
+          color: isSelected ? color : color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? color : color.withOpacity(0.3),
+            width: isSelected ? 2 : 1,
+          ),
+          boxShadow: isSelected
+              ? [BoxShadow(color: color.withOpacity(0.3), blurRadius: 4, offset: const Offset(0, 2))]
+              : null,
         ),
-        child: Text(
-          status[0], // 'P', 'A', 'L'
-          style: GoogleFonts.inter(
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-            color: isSelected ? AppColors.pureWhite : color,
+        child: Center(
+          child: Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              fontWeight: FontWeight.w800,
+              color: isSelected ? AppColors.pureWhite : color,
+            ),
           ),
         ),
       ),

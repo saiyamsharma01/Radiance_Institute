@@ -64,14 +64,13 @@ class CreateHomeworkView extends GetView<TeacherController> {
                   style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 8),
-                Obx(() => Row(
+                Obx(() => Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
                       children: [
                         _buildDeadlineChip('2 Days', 2),
-                        const SizedBox(width: 8),
                         _buildDeadlineChip('3 Days', 3),
-                        const SizedBox(width: 8),
                         _buildDeadlineChip('5 Days', 5),
-                        const SizedBox(width: 8),
                         _buildDeadlineChip('1 Week', 7),
                       ],
                     )),

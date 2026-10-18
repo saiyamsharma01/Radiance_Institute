@@ -20,7 +20,7 @@ class StudentController extends GetxController {
   final RxList<FeeInvoiceModel> invoices = <FeeInvoiceModel>[].obs;
   final RxBool isLoading = false.obs;
 
-  final String activeStudentId = 'RAD-2026-0042';
+  final RxString activeStudentId = 'RAD-2026-0042'.obs;
 
   @override
   void onInit() {
@@ -30,13 +30,26 @@ class StudentController extends GetxController {
 
   Future<void> loadStudentData() async {
     try {
-      isLoading.value = true;
-      student.value = await repository.getStudentById(activeStudentId);
-      batches.value = await repository.getBatches();
-      attendanceHistory.value = await repository.getAttendanceForStudent(activeStudentId);
-      homeworkList.value = await repository.getHomeworkForStudent(activeStudentId);
-      testResults.value = await repository.getResultsForStudent(activeStudentId);
-      invoices.value = await repository.getInvoicesForStudent(activeStudentId);
+      if (student.value == null) {
+        isLoading.value = true;
+      }
+      final sId = activeStudentId.value;
+
+      final results = await Future.wait([
+        repository.getStudentById(sId),
+        repository.getBatches(),
+        repository.getAttendanceForStudent(sId),
+        repository.getHomeworkForStudent(sId),
+        repository.getResultsForStudent(sId),
+        repository.getInvoicesForStudent(sId),
+      ]);
+
+      student.value = results[0] as StudentModel?;
+      batches.value = results[1] as List<BatchModel>;
+      attendanceHistory.value = results[2] as List<AttendanceModel>;
+      homeworkList.value = results[3] as List<HomeworkModel>;
+      testResults.value = results[4] as List<ResultModel>;
+      invoices.value = results[5] as List<FeeInvoiceModel>;
     } finally {
       isLoading.value = false;
     }
@@ -58,7 +71,7 @@ class StudentController extends GetxController {
     final submission = SubmissionModel(
       submissionId: 'sub_${DateTime.now().millisecondsSinceEpoch}',
       homeworkId: homeworkId,
-      studentId: activeStudentId,
+      studentId: activeStudentId.value,
       studentName: student.value?.fullName ?? 'Aarav Sharma',
       resourcePaths: ['submissions/$homeworkId/solution_upload.pdf'],
       submittedAt: DateTime.now(),

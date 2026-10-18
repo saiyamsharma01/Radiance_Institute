@@ -12,6 +12,8 @@ class StudentAttendanceView extends GetView<StudentController> {
 
   @override
   Widget build(BuildContext context) {
+    final RxString selectedBatchFilter = 'ALL'.obs;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
       appBar: const RadianceAppBar(
@@ -21,16 +23,37 @@ class StudentAttendanceView extends GetView<StudentController> {
       body: Obx(() {
         final attendance = controller.attendanceHistory;
         final pct = controller.attendancePercentage.toStringAsFixed(1);
+        final presentCount = attendance.where((a) => a.status == 'PRESENT').length;
+        final absentCount = attendance.where((a) => a.status == 'ABSENT').length;
+        final lateCount = attendance.where((a) => a.status == 'LATE').length;
+
+        final filtered = selectedBatchFilter.value == 'ALL'
+            ? attendance
+            : attendance.where((a) => a.batchId == selectedBatchFilter.value).toList();
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Attendance Summary Card
-              RadianceCard(
+              Container(
                 padding: const EdgeInsets.all(20),
-                backgroundColor: AppColors.primaryRoyalBlue,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [AppColors.deepNavy, AppColors.primaryRoyalBlue],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primaryRoyalBlue.withOpacity(0.2),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -40,15 +63,16 @@ class StudentAttendanceView extends GetView<StudentController> {
                         Text(
                           'Overall Attendance',
                           style: GoogleFonts.inter(
-                            fontSize: 14,
+                            fontSize: 13,
                             color: AppColors.lightBlueBackground,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           '$pct%',
                           style: GoogleFonts.outfit(
-                            fontSize: 32,
+                            fontSize: 34,
                             fontWeight: FontWeight.w800,
                             color: AppColors.pureWhite,
                           ),
@@ -58,14 +82,15 @@ class StudentAttendanceView extends GetView<StudentController> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                       decoration: BoxDecoration(
-                        color: AppColors.pureWhite.withOpacity(0.15),
+                        color: AppColors.pureWhite.withOpacity(0.18),
                         borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: AppColors.pureWhite.withOpacity(0.25)),
                       ),
                       child: Text(
-                        '${attendance.where((a) => a.status == 'PRESENT').length} / ${attendance.length} Sessions',
+                        '$presentCount / ${attendance.length} Present',
                         style: GoogleFonts.inter(
                           fontSize: 13,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
                           color: AppColors.pureWhite,
                         ),
                       ),
@@ -73,10 +98,22 @@ class StudentAttendanceView extends GetView<StudentController> {
                   ],
                 ),
               ),
+              const SizedBox(height: 16),
+
+              // Breakdown Chips
+              Row(
+                children: [
+                  _buildStatTile('Present', '$presentCount', AppColors.success),
+                  const SizedBox(width: 10),
+                  _buildStatTile('Absent', '$absentCount', AppColors.error),
+                  const SizedBox(width: 10),
+                  _buildStatTile('Late', '$lateCount', AppColors.warning),
+                ],
+              ),
               const SizedBox(height: 20),
 
               Text(
-                'Session Records',
+                'Class Sessions',
                 style: GoogleFonts.outfit(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -88,22 +125,27 @@ class StudentAttendanceView extends GetView<StudentController> {
               ListView.separated(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: attendance.length,
+                itemCount: filtered.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 10),
                 itemBuilder: (context, index) {
-                  final record = attendance[index];
+                  final record = filtered[index];
+                  final isPresent = record.status == 'PRESENT';
+
                   return RadianceCard(
                     padding: const EdgeInsets.all(16),
                     child: Row(
                       children: [
-                        Icon(
-                          record.status == 'PRESENT'
-                              ? Icons.check_circle_outline
-                              : Icons.cancel_outlined,
-                          color: record.status == 'PRESENT'
-                              ? AppColors.success
-                              : AppColors.error,
-                          size: 28,
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: (isPresent ? AppColors.success : AppColors.error).withOpacity(0.12),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            isPresent ? Icons.check_circle : Icons.cancel,
+                            color: isPresent ? AppColors.success : AppColors.error,
+                            size: 24,
+                          ),
                         ),
                         const SizedBox(width: 14),
                         Expanded(
@@ -111,16 +153,16 @@ class StudentAttendanceView extends GetView<StudentController> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Batch: ${record.batchId.replaceAll('_', ' ').toUpperCase()}',
+                                record.batchId.replaceAll('_', ' ').toUpperCase(),
                                 style: GoogleFonts.inter(
                                   fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textPrimary,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.deepNavy,
                                 ),
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                'Date: ${record.date}',
+                                'Date: ${record.date} • Verified by Faculty',
                                 style: GoogleFonts.inter(
                                   fontSize: 12,
                                   color: AppColors.textSecondary,
@@ -139,6 +181,36 @@ class StudentAttendanceView extends GetView<StudentController> {
           ),
         );
       }),
+    );
+  }
+
+  Widget _buildStatTile(String label, String value, Color color) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color.withOpacity(0.2)),
+        ),
+        child: Column(
+          children: [
+            Text(
+              value,
+              style: GoogleFonts.outfit(
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                color: color,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textSecondary),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

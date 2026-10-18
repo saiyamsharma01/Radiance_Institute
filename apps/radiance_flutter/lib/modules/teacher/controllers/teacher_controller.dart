@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../../../data/models/attendance_model.dart';
 import '../../../data/models/batch_model.dart';
 import '../../../data/models/homework_model.dart';
 import '../../../data/models/student_model.dart';
 import '../../../data/models/test_model.dart';
 import '../../../data/repositories/institute_repository.dart';
+import '../../auth/controllers/auth_controller.dart';
 
 class TeacherController extends GetxController {
   final IInstituteRepository repository;
@@ -19,6 +21,9 @@ class TeacherController extends GetxController {
   final RxList<TestModel> batchTests = <TestModel>[].obs;
   final RxBool isLoading = false.obs;
 
+  // Selected date for attendance
+  final RxString selectedAttendanceDate = DateFormat('yyyy-MM-dd').format(DateTime.now()).obs;
+
   // Mark Attendance State (studentId -> status)
   final RxMap<String, String> attendanceStatuses = <String, String>{}.obs;
 
@@ -29,9 +34,18 @@ class TeacherController extends GetxController {
 
   // New Test Form
   final testTitleController = TextEditingController();
-  final testMarksController = TextEditingController();
+  final testMarksController = TextEditingController(text: '100');
+  final testSubjectController = TextEditingController();
 
-  final String teacherUid = 'usr_teacher_phys';
+  String get teacherUid {
+    if (Get.isRegistered<AuthController>()) {
+      final user = Get.find<AuthController>().currentUser.value;
+      if (user != null && user.uid.isNotEmpty) {
+        return user.uid;
+      }
+    }
+    return 'usr_teacher_phys';
+  }
 
   @override
   void onInit() {
@@ -41,10 +55,17 @@ class TeacherController extends GetxController {
 
   Future<void> loadTeacherData() async {
     try {
-      isLoading.value = true;
-      assignedBatches.value = await repository.getBatches(teacherUid: teacherUid);
+      if (assignedBatches.isEmpty) isLoading.value = true;
+      final batches = await repository.getBatches();
+      // Filter by teacher or show all if current user is admin/teacher
+      final teacherBatches = batches.where((b) => b.teacherUids.contains(teacherUid)).toList();
+      assignedBatches.value = teacherBatches.isNotEmpty ? teacherBatches : batches;
       if (assignedBatches.isNotEmpty) {
-        selectBatch(assignedBatches.first);
+        if (selectedBatch.value == null || !assignedBatches.any((b) => b.batchId == selectedBatch.value!.batchId)) {
+          selectBatch(assignedBatches.first);
+        } else {
+          selectBatch(selectedBatch.value!);
+        }
       }
     } finally {
       isLoading.value = false;
@@ -53,7 +74,13 @@ class TeacherController extends GetxController {
 
   Future<void> selectBatch(BatchModel batch) async {
     selectedBatch.value = batch;
-    final allStudents = await repository.getStudents();
+    final results = await Future.wait([
+      repository.getStudents(),
+      repository.getHomeworkForBatch(batch.batchId),
+      repository.getTestsForBatch(batch.batchId),
+    ]);
+
+    final allStudents = results[0] as List<StudentModel>;
     batchStudents.value = allStudents
         .where((s) => s.enrolledBatchIds.contains(batch.batchId))
         .toList();
@@ -61,16 +88,24 @@ class TeacherController extends GetxController {
     // Default attendance status to PRESENT for all batch students
     final map = <String, String>{};
     for (final s in batchStudents) {
-      map[s.studentId] = 'PRESENT';
+      map[s.studentId] = attendanceStatuses[s.studentId] ?? 'PRESENT';
     }
     attendanceStatuses.value = map;
 
-    batchHomework.value = await repository.getHomeworkForBatch(batch.batchId);
-    batchTests.value = await repository.getTestsForBatch(batch.batchId);
+    batchHomework.value = results[1] as List<HomeworkModel>;
+    batchTests.value = results[2] as List<TestModel>;
   }
 
   void toggleAttendance(String studentId, String status) {
     attendanceStatuses[studentId] = status;
+  }
+
+  void markAllPresent() {
+    final map = <String, String>{};
+    for (final s in batchStudents) {
+      map[s.studentId] = 'PRESENT';
+    }
+    attendanceStatuses.value = map;
   }
 
   Future<void> submitBatchAttendance(String date) async {
@@ -92,7 +127,7 @@ class TeacherController extends GetxController {
         await repository.markAttendance(attendance);
       }
       Get.back();
-      Get.snackbar('Attendance Saved', 'Deterministic session marked successfully for $date.');
+      Get.snackbar('Attendance Saved', 'Session successfully verified and marked for $date.');
     } finally {
       isLoading.value = false;
     }
@@ -101,7 +136,10 @@ class TeacherController extends GetxController {
   Future<void> createHomework() async {
     final title = hwTitleController.text.trim();
     final desc = hwDescController.text.trim();
-    if (title.isEmpty || selectedBatch.value == null) return;
+    if (title.isEmpty || selectedBatch.value == null) {
+      Get.snackbar('Error', 'Please enter assignment title.');
+      return;
+    }
 
     try {
       isLoading.value = true;
@@ -111,7 +149,7 @@ class TeacherController extends GetxController {
         batchName: selectedBatch.value!.name,
         subject: selectedBatch.value!.subject,
         title: title,
-        description: desc,
+        description: desc.isNotEmpty ? desc : 'Complete assigned problem worksheet.',
         deadline: DateTime.now().add(Duration(days: hwDeadlineDays.value)),
         createdBy: teacherUid,
         createdAt: DateTime.now(),
@@ -122,6 +160,58 @@ class TeacherController extends GetxController {
       await selectBatch(selectedBatch.value!);
       Get.back();
       Get.snackbar('Homework Created', 'Assigned to ${selectedBatch.value!.name}');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> createTestAndPublish({
+    required String title,
+    required double totalMarks,
+    required String testDate,
+    required Map<String, double> marksMap,
+  }) async {
+    if (selectedBatch.value == null) return;
+    try {
+      isLoading.value = true;
+      final testId = 'test_${DateTime.now().millisecondsSinceEpoch}';
+      final results = <ResultModel>[];
+
+      for (final s in batchStudents) {
+        final obtained = marksMap[s.studentId] ?? (totalMarks * 0.85);
+        final pct = (obtained / totalMarks) * 100.0;
+        results.add(ResultModel(
+          resultId: 'res_${testId}_${s.studentId}',
+          testId: testId,
+          studentId: s.studentId,
+          studentName: s.fullName,
+          marksObtained: obtained,
+          totalMarks: totalMarks,
+          percentage: double.parse(pct.toStringAsFixed(1)),
+          feedback: 'Evaluated by Faculty',
+          publishedAt: DateTime.now(),
+          testTitle: title,
+          subject: selectedBatch.value!.subject,
+          testDate: testDate,
+        ));
+      }
+
+      final newTest = TestModel(
+        testId: testId,
+        batchId: selectedBatch.value!.batchId,
+        batchName: selectedBatch.value!.name,
+        subject: selectedBatch.value!.subject,
+        title: title,
+        testDate: testDate,
+        totalMarks: totalMarks,
+        status: 'PUBLISHED',
+        results: results,
+      );
+
+      await repository.createTest(newTest);
+      await selectBatch(selectedBatch.value!);
+      Get.back();
+      Get.snackbar('Test Published', '$title scores published for ${results.length} students.');
     } finally {
       isLoading.value = false;
     }
@@ -144,6 +234,7 @@ class TeacherController extends GetxController {
     hwDescController.dispose();
     testTitleController.dispose();
     testMarksController.dispose();
+    testSubjectController.dispose();
     super.onClose();
   }
 }

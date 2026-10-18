@@ -21,8 +21,29 @@ class StudentFeesView extends GetView<StudentController> {
       body: Obx(() {
         final invoices = controller.invoices;
 
+        if (invoices.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.receipt_long_outlined, size: 54, color: AppColors.textMuted.withOpacity(0.5)),
+                const SizedBox(height: 12),
+                Text(
+                  'No invoices found',
+                  style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.deepNavy),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'No fee invoices have been generated for your account.',
+                  style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary),
+                ),
+              ],
+            ),
+          );
+        }
+
         return ListView.separated(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           itemCount: invoices.length,
           separatorBuilder: (_, __) => const SizedBox(height: 14),
           itemBuilder: (context, index) {
@@ -50,8 +71,8 @@ class StudentFeesView extends GetView<StudentController> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Period: ${inv.period} (${inv.academicYear})',
-                    style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary),
+                    'Period: ${inv.period} (${inv.academicYear}) • Due by ${inv.dueDate}',
+                    style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary),
                   ),
                   const Divider(height: 24),
 
@@ -86,14 +107,14 @@ class StudentFeesView extends GetView<StudentController> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Merit Discount Applied',
-                            style: GoogleFonts.inter(fontSize: 13, color: AppColors.success),
+                            'Merit Scholarship Discount Applied',
+                            style: GoogleFonts.inter(fontSize: 13, color: AppColors.success, fontWeight: FontWeight.w500),
                           ),
                           Text(
                             '- ${inv.formattedDiscount}',
                             style: GoogleFonts.inter(
                               fontSize: 13,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w700,
                               color: AppColors.success,
                             ),
                           ),
@@ -107,7 +128,7 @@ class StudentFeesView extends GetView<StudentController> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Total Due:',
+                        'Total Invoiced:',
                         style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
@@ -129,14 +150,14 @@ class StudentFeesView extends GetView<StudentController> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Outstanding Balance:',
+                        'Outstanding Due:',
                         style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary),
                       ),
                       Text(
                         inv.formattedBalanceDue,
                         style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
                           color: isPaid ? AppColors.success : AppColors.error,
                         ),
                       ),

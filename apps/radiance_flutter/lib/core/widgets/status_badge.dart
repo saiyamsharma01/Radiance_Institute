@@ -63,19 +63,34 @@ class StatusBadge extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: fg.withOpacity(0.25), width: 1),
       ),
-      child: Text(
-        status.replaceAll('_', ' ').toUpperCase(),
-        style: GoogleFonts.inter(
-          fontSize: fontSize,
-          fontWeight: FontWeight.w700,
-          color: fg,
-          letterSpacing: 0.5,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              color: fg,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 5),
+          Text(
+            status.replaceAll('_', ' ').toUpperCase(),
+            style: GoogleFonts.inter(
+              fontSize: fontSize,
+              fontWeight: FontWeight.w700,
+              color: fg,
+              letterSpacing: 0.3,
+            ),
+          ),
+        ],
       ),
     );
   }

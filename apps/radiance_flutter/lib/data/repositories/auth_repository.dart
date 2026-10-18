@@ -18,7 +18,6 @@ class AuthRepository implements IAuthRepository {
 
   @override
   Future<UserModel?> login(String emailOrPhone, String password) async {
-    await Future.delayed(const Duration(milliseconds: 300));
     final cleanInput = emailOrPhone.trim().toLowerCase();
 
     // Look for matching user in registered accounts
@@ -34,7 +33,6 @@ class AuthRepository implements IAuthRepository {
 
   @override
   Future<UserModel?> loginWithPhoneOtp(String phoneNumber, String otp) async {
-    await Future.delayed(const Duration(milliseconds: 400));
     // Verify 6-digit OTP (in sandbox demo, any 6-digit number or 123456 verifies)
     if (otp.trim().length != 6) {
       throw Exception('Please enter a valid 6-digit OTP.');

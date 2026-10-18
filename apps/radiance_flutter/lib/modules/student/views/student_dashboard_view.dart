@@ -23,7 +23,7 @@ class StudentDashboardView extends GetView<StudentController> {
         onLogout: () => Get.find<AuthController>().logout(),
       ),
       body: Obx(() {
-        if (controller.isLoading.value) {
+        if (controller.isLoading.value && controller.student.value == null) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -34,27 +34,53 @@ class StudentDashboardView extends GetView<StudentController> {
         return RefreshIndicator(
           onRefresh: controller.loadStudentData,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Student Profile Card
-                RadianceCard(
-                  backgroundColor: AppColors.primaryRoyalBlue,
+                // Student Profile Banner
+                Container(
                   padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [AppColors.deepNavy, AppColors.primaryRoyalBlue],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primaryRoyalBlue.withOpacity(0.25),
+                        blurRadius: 14,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
                   child: Row(
                     children: [
                       Container(
-                        width: 56,
-                        height: 56,
+                        width: 58,
+                        height: 58,
                         decoration: BoxDecoration(
                           color: AppColors.pureWhite,
                           shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 8,
+                            ),
+                          ],
                         ),
-                        child: const Icon(
-                          Icons.person,
-                          size: 32,
-                          color: AppColors.primaryRoyalBlue,
+                        child: Center(
+                          child: Text(
+                            (student?.fullName.isNotEmpty ?? false) ? student!.fullName[0] : 'S',
+                            style: GoogleFonts.outfit(
+                              fontSize: 26,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.primaryRoyalBlue,
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -76,6 +102,7 @@ class StudentDashboardView extends GetView<StudentController> {
                               style: GoogleFonts.inter(
                                 fontSize: 13,
                                 color: AppColors.lightBlueBackground,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                             const SizedBox(height: 2),
@@ -89,22 +116,38 @@ class StudentDashboardView extends GetView<StudentController> {
                           ],
                         ),
                       ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppColors.pureWhite.withOpacity(0.18),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: AppColors.pureWhite.withOpacity(0.3)),
+                        ),
+                        child: Text(
+                          'ACTIVE',
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.pureWhite,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 20),
 
-                // 4 Core Academic KPIs
+                // 4 Core Academic KPIs (Responsive Grid)
                 LayoutBuilder(
                   builder: (context, constraints) {
-                    final isWide = constraints.maxWidth > 600;
+                    final isWide = constraints.maxWidth > 650;
                     return GridView.count(
                       crossAxisCount: isWide ? 4 : 2,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      childAspectRatio: isWide ? 1.4 : 1.3,
+                      childAspectRatio: isWide ? 1.45 : 1.25,
                       children: [
                         _buildMetricTile(
                           icon: Icons.calendar_today_outlined,
@@ -116,7 +159,7 @@ class StudentDashboardView extends GetView<StudentController> {
                         _buildMetricTile(
                           icon: Icons.assignment_outlined,
                           label: 'Homework',
-                          value: '${controller.homeworkList.length} Active',
+                          value: '${controller.homeworkList.length} Tasks',
                           color: AppColors.info,
                           onTap: () => Get.toNamed(AppRoutes.studentHomework),
                         ),
@@ -154,12 +197,19 @@ class StudentDashboardView extends GetView<StudentController> {
                         color: AppColors.deepNavy,
                       ),
                     ),
-                    Text(
-                      '${controller.batches.length} Batches',
-                      style: GoogleFonts.inter(
-                        fontSize: 13,
-                        color: AppColors.textMuted,
-                        fontWeight: FontWeight.w600,
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: AppColors.lightBlueBackground,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        '${controller.batches.length} Batches',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: AppColors.primaryRoyalBlue,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ],
@@ -197,8 +247,8 @@ class StudentDashboardView extends GetView<StudentController> {
                                   batch.name,
                                   style: GoogleFonts.inter(
                                     fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.textPrimary,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.deepNavy,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
@@ -216,7 +266,7 @@ class StudentDashboardView extends GetView<StudentController> {
                                     style: GoogleFonts.inter(
                                       fontSize: 12,
                                       color: AppColors.primaryRoyalBlue,
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ],
@@ -232,23 +282,32 @@ class StudentDashboardView extends GetView<StudentController> {
                 const SizedBox(height: 24),
 
                 // Upcoming Homework Assignments
-                Text(
-                  'Assignments & Homework',
-                  style: GoogleFonts.outfit(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.deepNavy,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Assignments & Homework',
+                      style: GoogleFonts.outfit(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.deepNavy,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => Get.toNamed(AppRoutes.studentHomework),
+                      child: const Text('View All'),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: controller.homeworkList.length,
+                  itemCount: controller.homeworkList.take(3).length,
                   separatorBuilder: (_, __) => const SizedBox(height: 10),
                   itemBuilder: (context, index) {
                     final hw = controller.homeworkList[index];
-                    final isSubmitted = hw.submissions.any((s) => s.studentId == controller.activeStudentId);
+                    final isSubmitted = hw.submissions.any((s) => s.studentId == controller.activeStudentId.value);
 
                     return RadianceCard(
                       padding: const EdgeInsets.all(16),
@@ -281,8 +340,8 @@ class StudentDashboardView extends GetView<StudentController> {
                             hw.title,
                             style: GoogleFonts.inter(
                               fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.textPrimary,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.deepNavy,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -313,6 +372,7 @@ class StudentDashboardView extends GetView<StudentController> {
                     );
                   },
                 ),
+                const SizedBox(height: 20),
               ],
             ),
           ),
@@ -330,7 +390,7 @@ class StudentDashboardView extends GetView<StudentController> {
   }) {
     return RadianceCard(
       onTap: onTap,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -346,21 +406,27 @@ class StudentDashboardView extends GetView<StudentController> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                value,
-                style: GoogleFonts.outfit(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.deepNavy,
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  value,
+                  style: GoogleFonts.outfit(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.deepNavy,
+                  ),
                 ),
               ),
               const SizedBox(height: 2),
               Text(
                 label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.inter(
                   fontSize: 12,
                   color: AppColors.textMuted,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],

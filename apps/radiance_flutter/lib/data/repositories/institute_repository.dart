@@ -1,6 +1,7 @@
 import 'dart:async';
 import '../models/admission_enquiry_model.dart';
 import '../models/attendance_model.dart';
+import '../models/audit_log_model.dart';
 import '../models/batch_model.dart';
 import '../models/fee_models.dart';
 import '../models/homework_model.dart';
@@ -35,6 +36,7 @@ abstract class IInstituteRepository {
   // Tests & Results
   Future<List<TestModel>> getTestsForBatch(String batchId);
   Future<List<ResultModel>> getResultsForStudent(String studentId);
+  Future<void> createTest(TestModel test);
   Future<void> enterMarks(String testId, ResultModel result);
   Future<void> publishTestResults(String testId);
 
@@ -64,6 +66,14 @@ abstract class IInstituteRepository {
 
   // Notifications
   Future<List<NotificationModel>> getNotifications();
+  Future<void> markNotificationAsRead(String notificationId);
+  Future<void> markAllNotificationsAsRead();
+  Future<void> deleteNotification(String notificationId);
+  Future<void> addNotification(NotificationModel notification);
+
+  // Audit Logs
+  Future<List<AuditLogModel>> getAuditLogs();
+  Future<void> addAuditLog(AuditLogModel log);
 }
 
 class InstituteRepository implements IInstituteRepository {
@@ -77,11 +87,11 @@ class InstituteRepository implements IInstituteRepository {
   final List<PaymentReceiptModel> _receipts = List.from(MockDataSource.receipts);
   final List<AdmissionEnquiryModel> _enquiries = List.from(MockDataSource.enquiries);
   final List<NotificationModel> _notifications = List.from(MockDataSource.notifications);
+  final List<AuditLogModel> _auditLogs = List.from(MockDataSource.auditLogs);
 
   // ================= BATCHES =================
   @override
   Future<List<BatchModel>> getBatches({String? classLevel, String? teacherUid}) async {
-    await Future.delayed(const Duration(milliseconds: 150));
     return _batches.where((b) {
       if (classLevel != null && b.classLevel != classLevel) return false;
       if (teacherUid != null && !b.teacherUids.contains(teacherUid)) return false;
@@ -92,12 +102,23 @@ class InstituteRepository implements IInstituteRepository {
   @override
   Future<void> createBatch(BatchModel batch) async {
     _batches.add(batch);
+    _auditLogs.insert(
+      0,
+      AuditLogModel(
+        logId: 'log_${DateTime.now().millisecondsSinceEpoch}',
+        actorUid: 'usr_admin_1',
+        actorRole: 'ADMIN',
+        action: 'BATCH_CREATED',
+        resource: 'batches/${batch.batchId}',
+        timestamp: DateTime.now(),
+        details: 'Created batch ${batch.name} (${batch.subject}, Class ${batch.classLevel})',
+      ),
+    );
   }
 
   // ================= STUDENTS & TEACHERS =================
   @override
   Future<List<StudentModel>> getStudents() async {
-    await Future.delayed(const Duration(milliseconds: 150));
     return List.unmodifiable(_students);
   }
 
@@ -113,6 +134,18 @@ class InstituteRepository implements IInstituteRepository {
   @override
   Future<void> createStudent(StudentModel student) async {
     _students.add(student);
+    _auditLogs.insert(
+      0,
+      AuditLogModel(
+        logId: 'log_${DateTime.now().millisecondsSinceEpoch}',
+        actorUid: 'usr_admin_1',
+        actorRole: 'ADMIN',
+        action: 'STUDENT_ENROLLED',
+        resource: 'students/${student.studentId}',
+        timestamp: DateTime.now(),
+        details: '${student.fullName} (Roll: ${student.rollNumber}, Class ${student.classLevel})',
+      ),
+    );
   }
 
   @override
@@ -123,13 +156,11 @@ class InstituteRepository implements IInstituteRepository {
   // ================= ATTENDANCE =================
   @override
   Future<List<AttendanceModel>> getAttendanceForBatch(String batchId, String date) async {
-    await Future.delayed(const Duration(milliseconds: 100));
     return _attendance.where((a) => a.batchId == batchId && a.date == date).toList();
   }
 
   @override
   Future<List<AttendanceModel>> getAttendanceForStudent(String studentId) async {
-    await Future.delayed(const Duration(milliseconds: 100));
     return _attendance.where((a) => a.studentId == studentId).toList();
   }
 
@@ -146,14 +177,11 @@ class InstituteRepository implements IInstituteRepository {
   // ================= HOMEWORK =================
   @override
   Future<List<HomeworkModel>> getHomeworkForBatch(String batchId) async {
-    await Future.delayed(const Duration(milliseconds: 100));
     return _homework.where((h) => h.batchId == batchId).toList();
   }
 
   @override
   Future<List<HomeworkModel>> getHomeworkForStudent(String studentId) async {
-    await Future.delayed(const Duration(milliseconds: 100));
-    // Return all homeworks assigned to batches the student is enrolled in
     final student = await getStudentById(studentId);
     if (student == null) return [];
     return _homework.where((h) => student.enrolledBatchIds.contains(h.batchId)).toList();
@@ -161,7 +189,29 @@ class InstituteRepository implements IInstituteRepository {
 
   @override
   Future<void> createHomework(HomeworkModel homework) async {
-    _homework.add(homework);
+    _homework.insert(0, homework);
+    _auditLogs.insert(
+      0,
+      AuditLogModel(
+        logId: 'log_${DateTime.now().millisecondsSinceEpoch}',
+        actorUid: homework.createdBy,
+        actorRole: 'TEACHER',
+        action: 'HOMEWORK_PUBLISHED',
+        resource: 'homework/${homework.homeworkId}',
+        timestamp: DateTime.now(),
+        details: '${homework.title} assigned to batch ${homework.batchName}',
+      ),
+    );
+    _notifications.insert(
+      0,
+      NotificationModel(
+        notificationId: 'notif_${DateTime.now().millisecondsSinceEpoch}',
+        title: 'New Homework: ${homework.title}',
+        body: '${homework.subject} assignment due by ${homework.deadline.day}/${homework.deadline.month}.',
+        category: 'HOMEWORK',
+        createdAt: DateTime.now(),
+      ),
+    );
   }
 
   @override
@@ -189,28 +239,60 @@ class InstituteRepository implements IInstituteRepository {
         createdAt: hw.createdAt,
         submissions: currentSubmissions,
       );
+
+      _auditLogs.insert(
+        0,
+        AuditLogModel(
+          logId: 'log_${DateTime.now().millisecondsSinceEpoch}',
+          actorUid: submission.studentId,
+          actorRole: 'STUDENT',
+          action: 'HOMEWORK_SUBMITTED',
+          resource: 'homework/${submission.homeworkId}/submissions',
+          timestamp: DateTime.now(),
+          details: 'Submitted by ${submission.studentName}',
+        ),
+      );
     }
   }
 
   // ================= TESTS & RESULTS =================
   @override
   Future<List<TestModel>> getTestsForBatch(String batchId) async {
-    await Future.delayed(const Duration(milliseconds: 100));
     return _tests.where((t) => t.batchId == batchId).toList();
   }
 
   @override
   Future<List<ResultModel>> getResultsForStudent(String studentId) async {
-    await Future.delayed(const Duration(milliseconds: 100));
     final List<ResultModel> results = [];
     for (final test in _tests) {
       for (final res in test.results) {
         if (res.studentId == studentId && res.publishedAt != null) {
-          results.add(res);
+          results.add(res.copyWith(
+            testTitle: test.title,
+            subject: test.subject,
+            testDate: test.testDate,
+          ));
         }
       }
     }
     return results;
+  }
+
+  @override
+  Future<void> createTest(TestModel test) async {
+    _tests.insert(0, test);
+    _auditLogs.insert(
+      0,
+      AuditLogModel(
+        logId: 'log_${DateTime.now().millisecondsSinceEpoch}',
+        actorUid: 'usr_teacher_phys',
+        actorRole: 'TEACHER',
+        action: 'TEST_SCHEDULED',
+        resource: 'tests/${test.testId}',
+        timestamp: DateTime.now(),
+        details: '${test.title} (${test.subject}, Date: ${test.testDate})',
+      ),
+    );
   }
 
   @override
@@ -245,17 +327,7 @@ class InstituteRepository implements IInstituteRepository {
     if (index >= 0) {
       final test = _tests[index];
       final publishedResults = test.results.map((r) {
-        return ResultModel(
-          resultId: r.resultId,
-          testId: r.testId,
-          studentId: r.studentId,
-          studentName: r.studentName,
-          marksObtained: r.marksObtained,
-          totalMarks: r.totalMarks,
-          percentage: r.percentage,
-          feedback: r.feedback,
-          publishedAt: DateTime.now(),
-        );
+        return r.copyWith(publishedAt: DateTime.now());
       }).toList();
 
       _tests[index] = TestModel(
@@ -269,25 +341,59 @@ class InstituteRepository implements IInstituteRepository {
         status: 'PUBLISHED',
         results: publishedResults,
       );
+
+      _auditLogs.insert(
+        0,
+        AuditLogModel(
+          logId: 'log_${DateTime.now().millisecondsSinceEpoch}',
+          actorUid: 'usr_teacher_phys',
+          actorRole: 'TEACHER',
+          action: 'RESULT_PUBLISHED',
+          resource: 'tests/$testId',
+          timestamp: DateTime.now(),
+          details: 'Published scores for ${test.title}',
+        ),
+      );
+
+      _notifications.insert(
+        0,
+        NotificationModel(
+          notificationId: 'notif_${DateTime.now().millisecondsSinceEpoch}',
+          title: 'Test Results Published',
+          body: '${test.title} (${test.subject}) results are now available.',
+          category: 'RESULT',
+          createdAt: DateTime.now(),
+        ),
+      );
     }
   }
 
   // ================= FEES & PAYMENTS =================
   @override
   Future<List<FeeInvoiceModel>> getAllInvoices() async {
-    await Future.delayed(const Duration(milliseconds: 150));
     return List.unmodifiable(_invoices);
   }
 
   @override
   Future<List<FeeInvoiceModel>> getInvoicesForStudent(String studentId) async {
-    await Future.delayed(const Duration(milliseconds: 100));
     return _invoices.where((i) => i.studentId == studentId).toList();
   }
 
   @override
   Future<void> createInvoice(FeeInvoiceModel invoice) async {
-    _invoices.add(invoice);
+    _invoices.insert(0, invoice);
+    _auditLogs.insert(
+      0,
+      AuditLogModel(
+        logId: 'log_${DateTime.now().millisecondsSinceEpoch}',
+        actorUid: 'usr_admin_1',
+        actorRole: 'ADMIN',
+        action: 'FEE_INVOICE_GENERATED',
+        resource: 'fee_invoices/${invoice.invoiceId}',
+        timestamp: DateTime.now(),
+        details: 'Issued to ${invoice.studentName} for ${invoice.formattedAmountDue}',
+      ),
+    );
   }
 
   @override
@@ -297,7 +403,6 @@ class InstituteRepository implements IInstituteRepository {
     required int amountPaise,
     required String gatewayPaymentId,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 600));
     final index = _invoices.indexWhere((i) => i.invoiceId == invoiceId);
     if (index < 0) throw Exception('Invoice $invoiceId not found');
 
@@ -323,7 +428,6 @@ class InstituteRepository implements IInstituteRepository {
       createdAt: invoice.createdAt,
     );
 
-    // Create official receipt
     final receiptId = 'RAD-REC-2026-${(1000 + _receipts.length + 1)}';
     final receipt = PaymentReceiptModel(
       receiptId: receiptId,
@@ -335,9 +439,21 @@ class InstituteRepository implements IInstituteRepository {
       period: invoice.period,
       issuedAt: DateTime.now(),
     );
-    _receipts.add(receipt);
+    _receipts.insert(0, receipt);
 
-    // Also push notification
+    _auditLogs.insert(
+      0,
+      AuditLogModel(
+        logId: 'log_${DateTime.now().millisecondsSinceEpoch}',
+        actorUid: 'usr_parent_1',
+        actorRole: 'PARENT',
+        action: 'FEE_PAYMENT_PROCESSED',
+        resource: 'receipts/$receiptId',
+        timestamp: DateTime.now(),
+        details: 'Paid ₹${(amountPaise / 100).toStringAsFixed(2)} for ${invoice.period}',
+      ),
+    );
+
     _notifications.insert(
       0,
       NotificationModel(
@@ -360,7 +476,6 @@ class InstituteRepository implements IInstituteRepository {
     required String dob,
     required String parentPhone,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 400));
     final studentIndex = _students.indexWhere(
       (s) => s.rollNumber.toUpperCase() == rollNumber.trim().toUpperCase(),
     );
@@ -374,7 +489,6 @@ class InstituteRepository implements IInstituteRepository {
       throw Exception('Verification failed: Date of birth does not match student record.');
     }
 
-    // Auto-link
     final updatedParents = List<String>.from(student.parentUids);
     if (!updatedParents.contains(parentUid)) {
       updatedParents.add(parentUid);
@@ -393,6 +507,19 @@ class InstituteRepository implements IInstituteRepository {
       );
     }
 
+    _auditLogs.insert(
+      0,
+      AuditLogModel(
+        logId: 'log_${DateTime.now().millisecondsSinceEpoch}',
+        actorUid: parentUid,
+        actorRole: 'PARENT',
+        action: 'PARENT_CHILD_AUTO_LINKED',
+        resource: 'students/${student.studentId}',
+        timestamp: DateTime.now(),
+        details: 'Linked ${student.fullName} (Roll: ${student.rollNumber})',
+      ),
+    );
+
     return {
       'success': true,
       'studentId': student.studentId,
@@ -404,7 +531,6 @@ class InstituteRepository implements IInstituteRepository {
   // ================= ADMISSIONS CRM =================
   @override
   Future<List<AdmissionEnquiryModel>> getAdmissionEnquiries() async {
-    await Future.delayed(const Duration(milliseconds: 150));
     return List.unmodifiable(_enquiries);
   }
 
@@ -426,18 +552,96 @@ class InstituteRepository implements IInstituteRepository {
         status: newStatus,
         createdAt: e.createdAt,
       );
+
+      _auditLogs.insert(
+        0,
+        AuditLogModel(
+          logId: 'log_${DateTime.now().millisecondsSinceEpoch}',
+          actorUid: 'usr_admin_1',
+          actorRole: 'ADMIN',
+          action: 'ENQUIRY_STATUS_CHANGED',
+          resource: 'enquiries/$enquiryId',
+          timestamp: DateTime.now(),
+          details: 'Updated status to $newStatus for ${e.studentName}',
+        ),
+      );
     }
   }
 
   @override
   Future<void> submitAdmissionEnquiry(AdmissionEnquiryModel enquiry) async {
     _enquiries.insert(0, enquiry);
+    _auditLogs.insert(
+      0,
+      AuditLogModel(
+        logId: 'log_${DateTime.now().millisecondsSinceEpoch}',
+        actorUid: 'usr_admin_1',
+        actorRole: 'ADMIN',
+        action: 'ENQUIRY_CREATED',
+        resource: 'enquiries/${enquiry.enquiryId}',
+        timestamp: DateTime.now(),
+        details: 'New enquiry registered for ${enquiry.studentName}',
+      ),
+    );
   }
 
   // ================= NOTIFICATIONS =================
   @override
   Future<List<NotificationModel>> getNotifications() async {
-    await Future.delayed(const Duration(milliseconds: 100));
     return List.unmodifiable(_notifications);
+  }
+
+  @override
+  Future<void> markNotificationAsRead(String notificationId) async {
+    final index = _notifications.indexWhere((n) => n.notificationId == notificationId);
+    if (index >= 0) {
+      final n = _notifications[index];
+      _notifications[index] = NotificationModel(
+        notificationId: n.notificationId,
+        title: n.title,
+        body: n.body,
+        category: n.category,
+        read: true,
+        createdAt: n.createdAt,
+        route: n.route,
+      );
+    }
+  }
+
+  @override
+  Future<void> markAllNotificationsAsRead() async {
+    for (int i = 0; i < _notifications.length; i++) {
+      final n = _notifications[i];
+      _notifications[i] = NotificationModel(
+        notificationId: n.notificationId,
+        title: n.title,
+        body: n.body,
+        category: n.category,
+        read: true,
+        createdAt: n.createdAt,
+        route: n.route,
+      );
+    }
+  }
+
+  @override
+  Future<void> deleteNotification(String notificationId) async {
+    _notifications.removeWhere((n) => n.notificationId == notificationId);
+  }
+
+  @override
+  Future<void> addNotification(NotificationModel notification) async {
+    _notifications.insert(0, notification);
+  }
+
+  // ================= AUDIT LOGS =================
+  @override
+  Future<List<AuditLogModel>> getAuditLogs() async {
+    return List.unmodifiable(_auditLogs);
+  }
+
+  @override
+  Future<void> addAuditLog(AuditLogModel log) async {
+    _auditLogs.insert(0, log);
   }
 }

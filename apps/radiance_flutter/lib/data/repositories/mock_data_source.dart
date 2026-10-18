@@ -1,5 +1,6 @@
 import '../models/admission_enquiry_model.dart';
 import '../models/attendance_model.dart';
+import '../models/audit_log_model.dart';
 import '../models/batch_model.dart';
 import '../models/fee_models.dart';
 import '../models/homework_model.dart';
@@ -358,6 +359,45 @@ class MockDataSource {
       body: 'Kinematics & Laws of Motion marks published. Score: 93.0%.',
       category: 'RESULT',
       createdAt: DateTime.now().subtract(const Duration(days: 3)),
+    ),
+  ];
+
+  static final List<AuditLogModel> auditLogs = [
+    AuditLogModel(
+      logId: 'log_1',
+      actorUid: 'usr_admin_1',
+      actorRole: 'ADMIN',
+      action: 'FEE_INVOICE_GENERATED',
+      resource: 'fee_invoices/INV-2026-00891',
+      timestamp: DateTime.now().subtract(const Duration(minutes: 10)),
+      details: 'Issued to Aarav Sharma for October 2026',
+    ),
+    AuditLogModel(
+      logId: 'log_2',
+      actorUid: 'usr_teacher_phys',
+      actorRole: 'TEACHER',
+      action: 'ATTENDANCE_MARKED',
+      resource: 'attendance/batch_c11_phys_a',
+      timestamp: DateTime.now().subtract(const Duration(hours: 2)),
+      details: 'Deterministic session finalized for Class 11 Physics',
+    ),
+    AuditLogModel(
+      logId: 'log_3',
+      actorUid: 'usr_parent_1',
+      actorRole: 'PARENT',
+      action: 'PARENT_CHILD_AUTO_LINKED',
+      resource: 'students/RAD-2026-0042',
+      timestamp: DateTime.now().subtract(const Duration(days: 1)),
+      details: 'Verified with DOB & Roll RAD11-042',
+    ),
+    AuditLogModel(
+      logId: 'log_4',
+      actorUid: 'usr_admin_1',
+      actorRole: 'ADMIN',
+      action: 'RESULT_PUBLISHED',
+      resource: 'tests/test_phys_oct',
+      timestamp: DateTime.now().subtract(const Duration(days: 3)),
+      details: 'Kinematics Monthly Test published for 28 students',
     ),
   ];
 }

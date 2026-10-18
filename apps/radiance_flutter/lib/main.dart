@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'core/constants/app_routes.dart';
 import 'core/constants/app_strings.dart';
 import 'core/theme/app_theme.dart';
@@ -10,6 +11,7 @@ import 'modules/admin/views/admin_dashboard_view.dart';
 import 'modules/auth/controllers/auth_controller.dart';
 import 'modules/auth/views/login_view.dart';
 import 'modules/auth/views/parent_otp_view.dart';
+import 'modules/common/controllers/notification_controller.dart';
 import 'modules/common/views/notifications_view.dart';
 import 'modules/parent/controllers/parent_controller.dart';
 import 'modules/parent/views/parent_child_linking_view.dart';
@@ -22,7 +24,6 @@ import 'modules/student/views/student_homework_view.dart';
 import 'modules/student/views/student_tests_view.dart';
 import 'modules/teacher/controllers/teacher_controller.dart';
 import 'modules/teacher/views/create_homework_view.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'modules/teacher/views/mark_attendance_view.dart';
 import 'modules/teacher/views/teacher_dashboard_view.dart';
 
@@ -41,6 +42,7 @@ void main() {
 
   // Initialize Core Controllers
   Get.put<AuthController>(AuthController(authRepo: authRepo), permanent: true);
+  Get.put<NotificationController>(NotificationController(repository: instituteRepo), permanent: true);
   Get.put<StudentController>(StudentController(repository: instituteRepo), permanent: true);
   Get.put<ParentController>(ParentController(repository: instituteRepo), permanent: true);
   Get.put<TeacherController>(TeacherController(repository: instituteRepo), permanent: true);
@@ -58,6 +60,8 @@ class RadianceApp extends StatelessWidget {
       title: AppStrings.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
+      defaultTransition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 150),
       initialRoute: AppRoutes.login,
       getPages: [
         GetPage(

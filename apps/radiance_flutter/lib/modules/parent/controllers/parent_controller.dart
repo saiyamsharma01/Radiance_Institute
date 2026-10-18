@@ -34,12 +34,19 @@ class ParentController extends GetxController {
 
   Future<void> loadParentData() async {
     try {
-      isLoading.value = true;
+      if (linkedChildren.isEmpty) {
+        isLoading.value = true;
+      }
       final allStudents = await repository.getStudents();
-      // In sandbox, linked to Aarav Sharma by default
-      linkedChildren.value = allStudents.where((s) => s.studentId == 'RAD-2026-0042').toList();
-      if (linkedChildren.isNotEmpty) {
+      // Linked to student 1 & student 2 by default in sandbox, or those containing parent
+      linkedChildren.value = allStudents.where((s) => s.studentId == 'RAD-2026-0042' || s.parentUids.contains('usr_parent_1')).toList();
+      if (linkedChildren.isEmpty && allStudents.isNotEmpty) {
+        linkedChildren.value = [allStudents.first];
+      }
+      if (linkedChildren.isNotEmpty && activeChild.value == null) {
         selectChild(linkedChildren.first);
+      } else if (activeChild.value != null) {
+        selectChild(activeChild.value!);
       }
     } finally {
       isLoading.value = false;
@@ -48,10 +55,23 @@ class ParentController extends GetxController {
 
   Future<void> selectChild(StudentModel child) async {
     activeChild.value = child;
-    childAttendance.value = await repository.getAttendanceForStudent(child.studentId);
-    childHomework.value = await repository.getHomeworkForStudent(child.studentId);
-    childResults.value = await repository.getResultsForStudent(child.studentId);
-    childInvoices.value = await repository.getInvoicesForStudent(child.studentId);
+    final results = await Future.wait([
+      repository.getAttendanceForStudent(child.studentId),
+      repository.getHomeworkForStudent(child.studentId),
+      repository.getResultsForStudent(child.studentId),
+      repository.getInvoicesForStudent(child.studentId),
+    ]);
+
+    childAttendance.value = results[0] as List<AttendanceModel>;
+    childHomework.value = results[1] as List<HomeworkModel>;
+    childResults.value = results[2] as List<ResultModel>;
+    childInvoices.value = results[3] as List<FeeInvoiceModel>;
+  }
+
+  double get childAttendancePercentage {
+    if (childAttendance.isEmpty) return 100.0;
+    final presentCount = childAttendance.where((a) => a.status == 'PRESENT').length;
+    return (presentCount / childAttendance.length) * 100.0;
   }
 
   Future<void> linkStudent() async {
@@ -93,7 +113,6 @@ class ParentController extends GetxController {
   Future<void> payInvoice(FeeInvoiceModel invoice) async {
     try {
       isLoading.value = true;
-      // In sandbox/emulator: simulate verified gateway transaction ID
       final paymentId = 'pay_rzp_${DateTime.now().millisecondsSinceEpoch}';
       final receipt = await repository.processPayment(
         invoiceId: invoice.invoiceId,
@@ -104,7 +123,11 @@ class ParentController extends GetxController {
 
       lastReceipt.value = receipt;
       await selectChild(activeChild.value!);
-      Get.snackbar('Payment Confirmed', 'Payment of ${invoice.formattedBalanceDue} received!');
+      Get.snackbar(
+        'Payment Confirmed',
+        'Payment of ${invoice.formattedBalanceDue} received! Receipt ${receipt.receiptId} issued.',
+        backgroundColor: Colors.white,
+      );
     } catch (e) {
       Get.snackbar('Payment Error', e.toString());
     } finally {

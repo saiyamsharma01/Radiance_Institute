@@ -8,9 +8,14 @@ import 'package:radiance_institute/main.dart';
 import 'package:radiance_institute/modules/admin/controllers/admin_controller.dart';
 import 'package:radiance_institute/modules/admin/views/admin_dashboard_view.dart';
 import 'package:radiance_institute/modules/auth/controllers/auth_controller.dart';
+import 'package:radiance_institute/modules/common/controllers/notification_controller.dart';
+import 'package:radiance_institute/modules/common/views/notifications_view.dart';
 import 'package:radiance_institute/modules/parent/controllers/parent_controller.dart';
+import 'package:radiance_institute/modules/parent/views/parent_dashboard_view.dart';
 import 'package:radiance_institute/modules/student/controllers/student_controller.dart';
+import 'package:radiance_institute/modules/student/views/student_dashboard_view.dart';
 import 'package:radiance_institute/modules/teacher/controllers/teacher_controller.dart';
+import 'package:radiance_institute/modules/teacher/views/teacher_dashboard_view.dart';
 
 void main() {
   setUp(() {
@@ -21,6 +26,7 @@ void main() {
     Get.put<IAuthRepository>(authRepo, permanent: true);
     Get.put<IInstituteRepository>(instituteRepo, permanent: true);
     Get.put<AuthController>(AuthController(authRepo: authRepo), permanent: true);
+    Get.put<NotificationController>(NotificationController(repository: instituteRepo), permanent: true);
     Get.put<StudentController>(StudentController(repository: instituteRepo), permanent: true);
     Get.put<ParentController>(ParentController(repository: instituteRepo), permanent: true);
     Get.put<TeacherController>(TeacherController(repository: instituteRepo), permanent: true);
@@ -100,4 +106,91 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     expect(find.text('Security & System Audit Trail'), findsOneWidget);
   });
+
+  testWidgets('StudentDashboardView renders cleanly on mobile screen without any RenderFlex overflow', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(393, 852);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    final studentController = Get.find<StudentController>();
+    await tester.runAsync(() async {
+      await studentController.loadStudentData();
+    });
+
+    await tester.pumpWidget(
+      const GetMaterialApp(
+        home: StudentDashboardView(),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.text('Student Portal'), findsOneWidget);
+    expect(find.text('Attendance'), findsOneWidget);
+  });
+
+  testWidgets('TeacherDashboardView renders cleanly on mobile screen without any RenderFlex overflow', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(393, 852);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    final teacherController = Get.find<TeacherController>();
+    await tester.runAsync(() async {
+      await teacherController.loadTeacherData();
+    });
+
+    await tester.pumpWidget(
+      const GetMaterialApp(
+        home: TeacherDashboardView(),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.text('Faculty Portal'), findsOneWidget);
+    expect(find.text('Assigned Batches'), findsOneWidget);
+  });
+
+  testWidgets('ParentDashboardView renders cleanly on mobile screen without any RenderFlex overflow', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(393, 852);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    final parentController = Get.find<ParentController>();
+    await tester.runAsync(() async {
+      await parentController.loadParentData();
+    });
+
+    await tester.pumpWidget(
+      const GetMaterialApp(
+        home: ParentDashboardView(),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.text('Parent Portal'), findsOneWidget);
+  });
+
+  testWidgets('NotificationsView renders cleanly on mobile screen without any RenderFlex overflow', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(393, 852);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    final notificationController = Get.find<NotificationController>();
+    await tester.runAsync(() async {
+      await notificationController.loadNotifications();
+    });
+
+    await tester.pumpWidget(
+      const GetMaterialApp(
+        home: NotificationsView(),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.text('Notifications & Alerts'), findsOneWidget);
+  });
 }
+

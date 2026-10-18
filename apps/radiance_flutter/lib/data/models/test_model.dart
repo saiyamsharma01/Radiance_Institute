@@ -8,6 +8,9 @@ class ResultModel {
   final double percentage;
   final String? feedback;
   final DateTime? publishedAt;
+  final String? testTitle;
+  final String? subject;
+  final String? testDate;
 
   ResultModel({
     required this.resultId,
@@ -19,7 +22,40 @@ class ResultModel {
     required this.percentage,
     this.feedback,
     this.publishedAt,
+    this.testTitle,
+    this.subject,
+    this.testDate,
   });
+
+  ResultModel copyWith({
+    String? resultId,
+    String? testId,
+    String? studentId,
+    String? studentName,
+    double? marksObtained,
+    double? totalMarks,
+    double? percentage,
+    String? feedback,
+    DateTime? publishedAt,
+    String? testTitle,
+    String? subject,
+    String? testDate,
+  }) {
+    return ResultModel(
+      resultId: resultId ?? this.resultId,
+      testId: testId ?? this.testId,
+      studentId: studentId ?? this.studentId,
+      studentName: studentName ?? this.studentName,
+      marksObtained: marksObtained ?? this.marksObtained,
+      totalMarks: totalMarks ?? this.totalMarks,
+      percentage: percentage ?? this.percentage,
+      feedback: feedback ?? this.feedback,
+      publishedAt: publishedAt ?? this.publishedAt,
+      testTitle: testTitle ?? this.testTitle,
+      subject: subject ?? this.subject,
+      testDate: testDate ?? this.testDate,
+    );
+  }
 
   factory ResultModel.fromJson(Map<String, dynamic> json) {
     final obtained = (json['marksObtained'] as num?)?.toDouble() ?? 0.0;
@@ -38,6 +74,9 @@ class ResultModel {
       publishedAt: json['publishedAt'] != null
           ? DateTime.parse(json['publishedAt'].toString())
           : null,
+      testTitle: json['testTitle'],
+      subject: json['subject'],
+      testDate: json['testDate'],
     );
   }
 
@@ -52,6 +91,9 @@ class ResultModel {
       'percentage': percentage,
       'feedback': feedback,
       'publishedAt': publishedAt?.toIso8601String(),
+      'testTitle': testTitle,
+      'subject': subject,
+      'testDate': testDate,
     };
   }
 }
