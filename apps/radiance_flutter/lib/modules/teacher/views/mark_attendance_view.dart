@@ -233,7 +233,7 @@ class MarkAttendanceView extends GetView<TeacherController> {
             label,
             style: GoogleFonts.inter(
               fontSize: 13,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               color: isSelected ? AppColors.pureWhite : color,
             ),
           ),

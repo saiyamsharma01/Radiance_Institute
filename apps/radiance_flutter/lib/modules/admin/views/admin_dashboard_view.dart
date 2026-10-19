@@ -406,7 +406,7 @@ class AdminDashboardView extends GetView<AdminController> {
                           '$badge',
                           style: GoogleFonts.inter(
                             fontSize: 10,
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w700,
                             color: AppColors.pureWhite,
                           ),
                         ),
@@ -475,7 +475,7 @@ class AdminDashboardView extends GetView<AdminController> {
                                       'SUPER ADMIN GOVERNANCE',
                                       style: GoogleFonts.inter(
                                         fontSize: 10,
-                                        fontWeight: FontWeight.w800,
+                                        fontWeight: FontWeight.w700,
                                         color: AppColors.pureWhite,
                                         letterSpacing: 0.5,
                                       ),
@@ -1497,7 +1497,7 @@ class AdminDashboardView extends GetView<AdminController> {
                   'LIVE',
                   style: GoogleFonts.inter(
                     fontSize: 9,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                     color: color,
                     letterSpacing: 0.5,
                   ),

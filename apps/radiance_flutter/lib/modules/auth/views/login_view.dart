@@ -377,7 +377,7 @@ class LoginView extends GetView<AuthController> {
                                   'DEMO QUICK ROLE SWITCHER',
                                   style: GoogleFonts.inter(
                                     fontSize: 11,
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.w700,
                                     letterSpacing: 0.8,
                                     color: AppColors.deepNavy,
                                   ),

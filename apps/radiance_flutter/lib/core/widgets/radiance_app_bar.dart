@@ -182,7 +182,7 @@ class RadianceAppBar extends StatelessWidget implements PreferredSizeWidget {
                                 style: GoogleFonts.inter(
                                   color: AppColors.pureWhite,
                                   fontSize: 9,
-                                  fontWeight: FontWeight.w800,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ),

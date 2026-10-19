@@ -157,7 +157,7 @@ class StudentFeesView extends GetView<StudentController> {
                         inv.formattedBalanceDue,
                         style: GoogleFonts.inter(
                           fontSize: 15,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                           color: isPaid ? AppColors.success : AppColors.error,
                         ),
                       ),
