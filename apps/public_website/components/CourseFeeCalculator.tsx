@@ -215,12 +215,12 @@ export default function CourseFeeCalculator() {
               </div>
 
               {/* Scholarship Tier Badge */}
-              <div className="mt-3 p-3 bg-amber-50 rounded-xl border border-amber-200/80 flex items-center justify-between">
+              <div className="mt-3 p-3 bg-amber-50 rounded-xl border border-amber-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 sm:gap-2">
                 <span className="text-xs font-bold text-amber-900 flex items-center gap-1.5">
                   <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
-                  {scholarshipBadge}
+                  <span>{scholarshipBadge}</span>
                 </span>
-                <span className="text-xs font-extrabold text-amber-700">
+                <span className="text-xs font-extrabold text-amber-700 bg-amber-100/60 px-2 py-0.5 rounded">
                   Save ₹{discountAmount.toLocaleString("en-IN")}
                 </span>
               </div>
@@ -231,7 +231,7 @@ export default function CourseFeeCalculator() {
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
                 3. Choose Payment Structure
               </label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => setSelectedInstallmentPlan("quarterly")}
@@ -242,7 +242,7 @@ export default function CourseFeeCalculator() {
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-radiance-blue" />
+                    <Calendar className="w-4 h-4 text-radiance-blue shrink-0" />
                     <span className="text-xs font-bold">4 Quarterly Installments</span>
                   </div>
                   <span className="text-[11px] text-slate-500 block mt-1">
@@ -260,11 +260,11 @@ export default function CourseFeeCalculator() {
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <CreditCard className="w-4 h-4 text-radiance-blue" />
+                    <CreditCard className="w-4 h-4 text-radiance-blue shrink-0" />
                     <span className="text-xs font-bold">1-Time Annual Payment</span>
                   </div>
                   <span className="text-[11px] text-slate-500 block mt-1">
-                    Includes all study materials & mock tests
+                    Includes all study materials &amp; mock tests
                   </span>
                 </button>
               </div>

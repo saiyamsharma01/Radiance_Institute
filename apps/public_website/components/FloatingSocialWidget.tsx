@@ -17,10 +17,10 @@ export default function FloatingSocialWidget() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end">
       {/* Expanded Quick Contact Drawer */}
       {isOpen && (
-        <div className="mb-3 bg-white rounded-3xl p-5 shadow-2xl border border-slate-200/90 w-80 sm:w-88 animate-in fade-in slide-in-from-bottom-5 duration-200">
+        <div className="mb-3 bg-white rounded-3xl p-5 shadow-2xl border border-slate-200/90 w-[calc(100vw-32px)] sm:w-80 max-w-sm animate-in fade-in slide-in-from-bottom-5 duration-200">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-radiance-blue text-white flex items-center justify-center">

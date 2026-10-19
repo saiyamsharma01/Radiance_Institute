@@ -459,7 +459,7 @@ export default function InstagramFeed() {
           onClick={() => setSelectedPost(null)}
         >
           <div
-            className="bg-white rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl relative animate-in fade-in zoom-in-95 duration-200"
+            className="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-2xl relative animate-in fade-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
@@ -493,12 +493,12 @@ export default function InstagramFeed() {
                 <div>
                   {/* Institute Header */}
                   <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
-                    <div className="relative w-10 h-10 rounded-full overflow-hidden border border-slate-200">
+                    <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-slate-200 bg-white p-0.5 shrink-0">
                       <Image
                         src="/images/radiance_logo.jpg"
                         alt="Radiance"
                         fill
-                        className="object-cover"
+                        className="object-contain rounded-lg"
                       />
                     </div>
                     <div>

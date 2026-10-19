@@ -124,25 +124,25 @@ export default function HomePage() {
               </div>
 
               {/* Mini Stats Bar */}
-              <div className="pt-6 border-t border-white/15 grid grid-cols-3 gap-4 text-center sm:text-left">
-                <div>
-                  <div className="text-xl sm:text-2xl font-black text-amber-300">28+ Yrs</div>
-                  <div className="text-xs text-slate-300">Amritsar Academic Legacy</div>
+              <div className="pt-6 border-t border-white/15 grid grid-cols-3 gap-2 sm:gap-4 text-center sm:text-left">
+                <div className="p-1 sm:p-0">
+                  <div className="text-lg sm:text-2xl font-black text-amber-300">28+ Yrs</div>
+                  <div className="text-[10px] sm:text-xs text-slate-300 leading-tight mt-0.5">Academic Legacy</div>
                 </div>
-                <div>
-                  <div className="text-xl sm:text-2xl font-black text-amber-300">100 %ile</div>
-                  <div className="text-xs text-slate-300">JEE Physics Peak Score</div>
+                <div className="p-1 sm:p-0">
+                  <div className="text-lg sm:text-2xl font-black text-amber-300">100 %ile</div>
+                  <div className="text-[10px] sm:text-xs text-slate-300 leading-tight mt-0.5">JEE Physics Peak</div>
                 </div>
-                <div>
-                  <div className="text-xl sm:text-2xl font-black text-amber-300">200+</div>
-                  <div className="text-xs text-slate-300">Instagram Insights &amp; Reels</div>
+                <div className="p-1 sm:p-0">
+                  <div className="text-lg sm:text-2xl font-black text-amber-300">200+</div>
+                  <div className="text-[10px] sm:text-xs text-slate-300 leading-tight mt-0.5">Reels &amp; Posts</div>
                 </div>
               </div>
             </div>
 
             {/* Right Hero Visual Card */}
             <div className="lg:col-span-5 flex justify-center">
-              <div className="relative w-full max-w-sm rounded-3xl bg-white/10 border border-white/20 p-8 backdrop-blur-xl shadow-2xl flex flex-col justify-center items-center text-center">
+              <div className="relative w-full max-w-xs sm:max-w-sm rounded-3xl bg-white/10 border border-white/20 p-6 sm:p-8 backdrop-blur-xl shadow-2xl flex flex-col justify-center items-center text-center">
                 <div className="relative w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden mb-5 border-2 border-white/30 shadow-2xl bg-white p-2 flex items-center justify-center">
                   <Image
                     src="/images/radiance_logo.jpg"

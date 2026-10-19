@@ -103,8 +103,8 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             {/* Logo & Institute Identity */}
-            <Link href="/" className="flex items-center gap-3 group shrink-0">
-              <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden bg-white border border-slate-200/90 shadow-sm p-1 flex items-center justify-center group-hover:border-radiance-blue group-hover:shadow-md transition-all duration-200 shrink-0">
+            <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
+              <div className="relative w-11 h-11 sm:w-14 sm:h-14 rounded-xl overflow-hidden bg-white border border-slate-200/90 shadow-sm p-1 flex items-center justify-center group-hover:border-radiance-blue group-hover:shadow-md transition-all duration-200 shrink-0">
                 <Image
                   src="/images/radiance_logo.jpg"
                   alt="Radiance Institute Logo"
@@ -114,15 +114,15 @@ export default function Navbar() {
                 />
               </div>
               <div className="flex flex-col">
-                <div className="flex items-center gap-2">
-                  <span className="font-black text-xl text-radiance-navy tracking-tight group-hover:text-radiance-blue transition-colors">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <span className="font-black text-lg sm:text-xl text-radiance-navy tracking-tight group-hover:text-radiance-blue transition-colors">
                     Radiance Institute
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5 text-[11px]">
+                <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px]">
                   <span className="font-semibold text-slate-500">Unit of Bedi College</span>
                   <span className="w-1 h-1 rounded-full bg-amber-500"></span>
-                  <span className="font-bold text-amber-600 tracking-wide uppercase text-[10px]">
+                  <span className="font-bold text-amber-600 tracking-wide uppercase text-[9px] sm:text-[10px]">
                     Est. 1998
                   </span>
                 </div>
@@ -390,102 +390,122 @@ export default function Navbar() {
 
       {/* 3. Mobile Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-x-0 top-[110px] sm:top-[120px] bottom-0 bg-white/98 backdrop-blur-xl border-t border-slate-200 overflow-y-auto p-5 space-y-6 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-200 z-50">
+        <div className="lg:hidden absolute top-full inset-x-0 bg-white/98 backdrop-blur-xl border-t border-slate-200 overflow-y-auto p-5 space-y-6 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200 z-50 max-h-[calc(100vh-70px)]">
           {/* Quick Links Group */}
           <div className="space-y-1">
             <Link
               href="/"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-xl font-bold text-sm text-slate-800 hover:bg-slate-50"
+              className="flex items-center justify-between px-4 py-3 rounded-xl font-bold text-sm text-slate-800 hover:bg-slate-50"
             >
-              Home
+              <span>Home</span>
+              <span className="text-xs text-slate-400">→</span>
             </Link>
-            <Link
-              href="/about"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-xl font-bold text-sm text-slate-800 hover:bg-slate-50"
-            >
-              About Campus & Bedi Sir
-            </Link>
+
+            <div className="pt-2 pb-1 px-4 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+              Academic Programs
+            </div>
             <Link
               href="/classes"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-xl font-bold text-sm text-slate-800 hover:bg-slate-50"
+              className="block px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 hover:bg-slate-50"
             >
-              Classes 6–10 Foundation
+              📚 Classes 6–10 Foundation (NTSE & Olympiads)
             </Link>
             <Link
               href="/subjects"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-xl font-bold text-sm text-slate-800 hover:bg-slate-50"
+              className="block px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 hover:bg-slate-50"
             >
-              Senior Secondary PCM & Physics
+              ⚛️ Senior Secondary PCM & Physics (Er. Bedi Sir)
             </Link>
+            <Link
+              href="/#batches"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 hover:bg-slate-50"
+            >
+              ⏱️ Batch Timings & Seat Capacities
+            </Link>
+
+            <div className="pt-3 pb-1 px-4 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+              Student Hub & Highlights
+            </div>
             <Link
               href="/#toppers"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-xl font-bold text-sm text-slate-800 hover:bg-slate-50"
+              className="block px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 hover:bg-slate-50"
             >
-              Toppers & Hall of Fame
+              🏆 Toppers & Hall of Fame
             </Link>
             <Link
               href="/#calculator"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-xl font-bold text-sm text-slate-800 hover:bg-slate-50"
+              className="block px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 hover:bg-slate-50"
             >
-              Fee & Scholarship Calculator
+              ⚡ Fee & Scholarship Calculator
             </Link>
             <Link
               href="/#instagram-feed"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-xl font-bold text-sm text-slate-800 hover:bg-slate-50"
+              className="block px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 hover:bg-slate-50"
             >
-              Instagram Channel & Reels
+              📸 Instagram Channel (@radiance_institute)
+            </Link>
+
+            <div className="pt-3 pb-1 px-4 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+              Institute Info
+            </div>
+            <Link
+              href="/about"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 hover:bg-slate-50"
+            >
+              🏛️ About Campus & Legacy
             </Link>
             <Link
               href="/contact"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-xl font-bold text-sm text-slate-800 hover:bg-slate-50"
+              className="block px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 hover:bg-slate-50"
             >
-              Contact Campus
+              📍 Campus Directions & Visiting Hours
             </Link>
           </div>
 
           {/* Action CTAs in Mobile */}
-          <div className="space-y-3 pt-3 border-t border-slate-100">
+          <div className="space-y-2.5 pt-3 border-t border-slate-100">
             <Link
               href="/admissions"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full inline-flex items-center justify-center gap-2 bg-radiance-blue text-white font-bold text-sm py-3.5 rounded-xl shadow-lg"
+              className="w-full inline-flex items-center justify-center gap-2 bg-radiance-blue text-white font-bold text-xs sm:text-sm py-3.5 rounded-xl shadow-lg"
             >
               <span>Submit Admission Enquiry</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
 
-            <a
-              href="https://wa.me/919914122256?text=Hello%20Radiance%20Institute,%20I%20would%20like%20to%20enquire%20about%20admissions."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 bg-emerald-600 text-white font-bold text-sm py-3.5 rounded-xl shadow-md"
-            >
-              <MessageCircle className="w-4 h-4" />
-              <span>Chat on WhatsApp</span>
-            </a>
+            <div className="grid grid-cols-2 gap-2">
+              <a
+                href="https://wa.me/919914122256?text=Hello%20Radiance%20Institute,%20I%20would%20like%20to%20enquire%20about%20admissions."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-1.5 bg-emerald-600 text-white font-bold text-xs py-3 rounded-xl shadow"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+                <span>WhatsApp</span>
+              </a>
 
-            <a
-              href="https://www.instagram.com/radiance_institute/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-sm py-3.5 rounded-xl shadow-md"
-            >
-              <Instagram className="w-4 h-4" />
-              <span>Follow @radiance_institute</span>
-            </a>
+              <a
+                href="tel:+919914122256"
+                className="inline-flex items-center justify-center gap-1.5 bg-slate-900 text-white font-bold text-xs py-3 rounded-xl shadow"
+              >
+                <Phone className="w-3.5 h-3.5 text-amber-400" />
+                <span>Call Campus</span>
+              </a>
+            </div>
           </div>
 
           {/* Campus Helpline Footer */}
-          <div className="pt-3 text-center text-xs text-slate-500">
-            📍 85-A, Rani Ka Bagh, Amritsar • 📞 +91 99141 22256
+          <div className="pt-2 text-center text-[11px] text-slate-400 border-t border-slate-100">
+            85-A, Rani Ka Bagh, Amritsar • Helpline: +91 99141 22256
           </div>
         </div>
       )}
