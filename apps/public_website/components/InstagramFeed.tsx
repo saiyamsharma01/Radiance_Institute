@@ -194,14 +194,14 @@ export default function InstagramFeed() {
             {/* Left: Avatar & Profile Info */}
             <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-5">
               {/* Instagram Story Gradient Ring */}
-              <div className="p-1 rounded-full bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600 shadow-md shrink-0">
-                <div className="p-1 bg-white rounded-full">
-                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden">
+              <div className="p-1 rounded-2xl bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600 shadow-md shrink-0">
+                <div className="p-1.5 bg-white rounded-xl">
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden flex items-center justify-center">
                     <Image
                       src="/images/radiance_logo.jpg"
                       alt="Radiance Institute Instagram Profile"
                       fill
-                      className="object-cover"
+                      className="object-contain"
                     />
                   </div>
                 </div>
