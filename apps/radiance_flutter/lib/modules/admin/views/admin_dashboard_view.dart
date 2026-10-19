@@ -31,6 +31,7 @@ class AdminDashboardView extends GetView<AdminController> {
             child: Column(
               children: [
                 _buildTopHeader(isDesktop),
+                if (!isDesktop) _buildMobileCategoryPills(),
                 Expanded(
                   child: Obx(() {
                     if (controller.isLoading.value && controller.students.isEmpty) {
@@ -241,7 +242,7 @@ class AdminDashboardView extends GetView<AdminController> {
   Widget _buildTopHeader(bool isDesktop) {
     return Container(
       height: 64,
-      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 24 : 8),
+      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 24 : 10),
       decoration: const BoxDecoration(
         color: AppColors.pureWhite,
         border: Border(bottom: BorderSide(color: AppColors.borderSubtle)),
@@ -250,28 +251,41 @@ class AdminDashboardView extends GetView<AdminController> {
         children: [
           if (!isDesktop) ...[
             IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.deepNavy, size: 20),
+              icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.deepNavy, size: 18),
               tooltip: 'Exit Admin Portal',
               onPressed: () => Get.back(),
             ),
             Builder(
               builder: (ctx) => IconButton(
-                icon: const Icon(Icons.menu, color: AppColors.deepNavy),
+                icon: const Icon(Icons.menu_open_rounded, color: AppColors.deepNavy, size: 22),
                 tooltip: 'All Sections',
                 onPressed: () => Scaffold.of(ctx).openDrawer(),
               ),
             ),
+            const SizedBox(width: 2),
           ],
-          const SizedBox(width: 4),
           Expanded(
-            child: Text(
-              isDesktop ? 'Institute Governance & Operations' : 'Admin Portal',
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.outfit(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: AppColors.deepNavy,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  isDesktop ? 'Institute Governance & Operations' : 'Admin Portal',
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.outfit(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.deepNavy,
+                  ),
+                ),
+                Text(
+                  isDesktop ? 'Radiance Executive Governance • Real-Time Systems' : 'Governance & Admissions',
+                  style: GoogleFonts.inter(
+                    fontSize: 11,
+                    color: AppColors.textMuted,
+                  ),
+                ),
+              ],
             ),
           ),
           if (isDesktop) ...[
@@ -280,16 +294,17 @@ class AdminDashboardView extends GetView<AdminController> {
               decoration: BoxDecoration(
                 color: AppColors.lightBlueBackground,
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppColors.primaryRoyalBlue.withOpacity(0.2)),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.verified_user, size: 16, color: AppColors.primaryRoyalBlue),
+                  const Icon(Icons.verified_user, size: 15, color: AppColors.primaryRoyalBlue),
                   const SizedBox(width: 6),
                   Text(
                     'Super Admin: Active',
                     style: GoogleFonts.inter(
                       fontSize: 12,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
                       color: AppColors.primaryRoyalBlue,
                     ),
                   ),
@@ -298,12 +313,111 @@ class AdminDashboardView extends GetView<AdminController> {
             ),
             const SizedBox(width: 12),
           ],
-          IconButton(
-            icon: const Icon(Icons.refresh, color: AppColors.textSecondary),
-            tooltip: 'Reload Data',
-            onPressed: controller.loadAllAdminData,
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.lightBlueBackground.withOpacity(0.6),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: IconButton(
+              icon: const Icon(Icons.sync, color: AppColors.primaryRoyalBlue, size: 19),
+              tooltip: 'Sync Data',
+              onPressed: controller.loadAllAdminData,
+            ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildMobileCategoryPills() {
+    final tabs = [
+      {'title': 'Overview', 'icon': Icons.dashboard_outlined, 'index': 0},
+      {'title': 'CRM Pipeline', 'icon': Icons.contact_mail_outlined, 'index': 1, 'badge': controller.newEnquiriesCount},
+      {'title': 'Students', 'icon': Icons.people_outline, 'index': 2},
+      {'title': 'Batches', 'icon': Icons.layers_outlined, 'index': 3},
+      {'title': 'Fee Ledger', 'icon': Icons.account_balance_outlined, 'index': 4},
+      {'title': 'Audit Logs', 'icon': Icons.security_outlined, 'index': 5},
+    ];
+
+    return Container(
+      height: 48,
+      decoration: const BoxDecoration(
+        color: AppColors.pureWhite,
+        border: Border(bottom: BorderSide(color: AppColors.borderSubtle)),
+      ),
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        scrollDirection: Axis.horizontal,
+        itemCount: tabs.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemBuilder: (context, i) {
+          final tab = tabs[i];
+          final idx = tab['index'] as int;
+          return Obx(() {
+            final isSelected = controller.selectedNavIndex.value == idx;
+            final badge = tab['badge'] as int? ?? 0;
+
+            return InkWell(
+              onTap: () => controller.selectedNavIndex.value = idx,
+              borderRadius: BorderRadius.circular(20),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                decoration: BoxDecoration(
+                  gradient: isSelected
+                      ? const LinearGradient(
+                          colors: [AppColors.deepNavy, AppColors.primaryRoyalBlue],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : null,
+                  color: isSelected ? null : AppColors.lightBlueBackground.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isSelected ? AppColors.primaryRoyalBlue : AppColors.borderSubtle,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      tab['icon'] as IconData,
+                      size: 14,
+                      color: isSelected ? AppColors.pureWhite : AppColors.deepNavy,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      tab['title'] as String,
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                        color: isSelected ? AppColors.pureWhite : AppColors.textPrimary,
+                      ),
+                    ),
+                    if (badge > 0) ...[
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: isSelected ? AppColors.accentGold : AppColors.primaryRoyalBlue,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          '$badge',
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.pureWhite,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            );
+          });
+        },
       ),
     );
   }
@@ -311,10 +425,116 @@ class AdminDashboardView extends GetView<AdminController> {
   // 1. Overview Screen
   Widget _buildOverviewView() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Executive Hero Governance Banner
+          Container(
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [AppColors.deepNavy, Color(0xFF1B3D74), AppColors.primaryRoyalBlue],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primaryRoyalBlue.withOpacity(0.22),
+                  blurRadius: 14,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: AppColors.pureWhite.withOpacity(0.18),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: Colors.white24),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.verified, size: 12, color: AppColors.accentGold),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'SUPER ADMIN GOVERNANCE',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w800,
+                                        color: AppColors.pureWhite,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Radiance Executive Control Center',
+                            style: GoogleFonts.outfit(
+                              fontSize: 19,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.pureWhite,
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Session 2026-27 • Amritsar Campus • Real-Time Database Active',
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              color: AppColors.lightBlueBackground,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _buildHeroActionChip(
+                      icon: Icons.person_add_alt_1,
+                      label: 'Record Enquiry',
+                      onTap: () => _showEnquiryCreationDialog(Get.context!),
+                    ),
+                    _buildHeroActionChip(
+                      icon: Icons.add_circle_outline,
+                      label: 'Create Batch',
+                      onTap: () => _showBatchCreationDialog(Get.context!),
+                    ),
+                    _buildHeroActionChip(
+                      icon: Icons.receipt_long,
+                      label: 'Issue Invoice',
+                      onTap: () => _showInvoiceCreationDialog(Get.context!),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+
           // 4 Core High-Level Metric Tiles (Responsive Grid)
           LayoutBuilder(builder: (context, constraints) {
             final isWide = constraints.maxWidth > 700;
@@ -353,7 +573,7 @@ class AdminDashboardView extends GetView<AdminController> {
               ],
             );
           }),
-          const SizedBox(height: 24),
+          const SizedBox(height: 22),
 
           // Recent Admission Enquiries & Outstanding Invoices
           LayoutBuilder(builder: (context, constraints) {
@@ -449,6 +669,39 @@ class AdminDashboardView extends GetView<AdminController> {
                   _buildLedgerRow('Verified Revenue', CurrencyFormatter.formatPaise(controller.totalRevenuePaise), AppColors.success),
                   const SizedBox(height: 10),
                   _buildLedgerRow('Pending Dues', CurrencyFormatter.formatPaise(controller.totalOutstandingPaise), AppColors.error),
+                  const SizedBox(height: 12),
+                  Builder(builder: (_) {
+                    final totalBilled = controller.totalRevenuePaise + controller.totalOutstandingPaise;
+                    final ratio = totalBilled > 0 ? (controller.totalRevenuePaise / totalBilled).clamp(0.0, 1.0) : 1.0;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Collection Rate: ${(ratio * 100).toStringAsFixed(1)}%',
+                              style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.success),
+                            ),
+                            Text(
+                              '${(100 - (ratio * 100)).toStringAsFixed(1)}% Outstanding',
+                              style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.error),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            value: ratio,
+                            minHeight: 6,
+                            backgroundColor: AppColors.errorLight,
+                            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.success),
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
                   const Divider(height: 24),
                   RadianceButton(
                     label: 'Issue Custom Invoice',
@@ -480,6 +733,40 @@ class AdminDashboardView extends GetView<AdminController> {
             );
           }),
         ],
+      ),
+    );
+  }
+
+  Widget _buildHeroActionChip({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        decoration: BoxDecoration(
+          color: AppColors.pureWhite.withOpacity(0.18),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.white30),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 15, color: AppColors.pureWhite),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: AppColors.pureWhite,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -868,42 +1155,77 @@ class AdminDashboardView extends GetView<AdminController> {
             itemBuilder: (context, index) {
               final b = controller.batches[index];
               return RadianceCard(
-                padding: const EdgeInsets.all(18),
-                child: Row(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.lightBlueBackground,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Icon(Icons.layers, color: AppColors.primaryRoyalBlue, size: 28),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(b.name, style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.deepNavy)),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Class ${b.classLevel} • Subject: ${b.subject} • Academic Year: ${b.academicYear}',
-                            style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: AppColors.lightBlueBackground,
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          if (b.schedule.isNotEmpty) ...[
-                            const SizedBox(height: 4),
-                            Text(
-                              'Timetable: ${b.schedule.map((s) => '${s.dayOfWeek} ${s.startTime}-${s.endTime} (${s.room})').join(', ')}',
-                              style: GoogleFonts.inter(fontSize: 12, color: AppColors.primaryRoyalBlue, fontWeight: FontWeight.w600),
+                          child: const Icon(Icons.layers, color: AppColors.primaryRoyalBlue, size: 22),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(b.name, style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.deepNavy)),
+                              const SizedBox(height: 2),
+                              Text(
+                                'Class ${b.classLevel} • Subject: ${b.subject} • Session: ${b.academicYear}',
+                                style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryRoyalBlue.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            '${b.enrolledStudentCount} Enrolled',
+                            style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.primaryRoyalBlue),
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (b.schedule.isNotEmpty) ...[
+                      const Divider(height: 18),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: b.schedule.map((s) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: AppColors.backgroundLight,
+                              borderRadius: BorderRadius.circular(6),
+                              border: Border.all(color: AppColors.borderSubtle),
                             ),
-                          ],
-                        ],
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.schedule, size: 12, color: AppColors.textMuted),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '${s.dayOfWeek} ${s.startTime}-${s.endTime} (${s.room})',
+                                  style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w500, color: AppColors.deepNavy),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
                       ),
-                    ),
-                    Text(
-                      '${b.enrolledStudentCount} Enrolled',
-                      style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.deepNavy),
-                    ),
+                    ],
                   ],
                 ),
               );
@@ -1084,30 +1406,41 @@ class AdminDashboardView extends GetView<AdminController> {
                           color: AppColors.lightBlueBackground,
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Icon(Icons.lock_clock, size: 20, color: AppColors.primaryRoyalBlue),
+                        child: const Icon(Icons.shield_outlined, size: 20, color: AppColors.primaryRoyalBlue),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              log.action,
-                              style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.deepNavy),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    log.action,
+                                    style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.deepNavy),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(formattedDate, style: GoogleFonts.inter(fontSize: 11, color: AppColors.textMuted)),
+                              ],
                             ),
+                            const SizedBox(height: 3),
                             Text(
                               'Resource: ${log.resource} • Actor: ${log.actorUid} (${log.actorRole})',
                               style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary),
                             ),
-                            if (log.details != null && log.details!.isNotEmpty)
+                            if (log.details != null && log.details!.isNotEmpty) ...[
+                              const SizedBox(height: 2),
                               Text(
                                 log.details!,
                                 style: GoogleFonts.inter(fontSize: 11, color: AppColors.primaryRoyalBlue, fontWeight: FontWeight.w500),
                               ),
+                            ],
                           ],
                         ),
                       ),
-                      Text(formattedDate, style: GoogleFonts.inter(fontSize: 11, color: AppColors.textMuted)),
                     ],
                   );
                 },
@@ -1125,18 +1458,54 @@ class AdminDashboardView extends GetView<AdminController> {
     required String value,
     required Color color,
   }) {
-    return RadianceCard(
-      padding: const EdgeInsets.all(12),
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.pureWhite,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: color.withOpacity(0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(color: color.withOpacity(0.12), borderRadius: BorderRadius.circular(8)),
-            child: Icon(icon, size: 18, color: color),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, size: 20, color: color),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  'LIVE',
+                  style: GoogleFonts.inter(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w800,
+                    color: color,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 8),
           Flexible(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1147,7 +1516,11 @@ class AdminDashboardView extends GetView<AdminController> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     value,
-                    style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.deepNavy),
+                    style: GoogleFonts.outfit(
+                      fontSize: 19,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.deepNavy,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -1155,7 +1528,11 @@ class AdminDashboardView extends GetView<AdminController> {
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.inter(fontSize: 11, color: AppColors.textMuted, fontWeight: FontWeight.w600),
+                  style: GoogleFonts.inter(
+                    fontSize: 11,
+                    color: AppColors.textMuted,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
