@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/widgets/radiance_button.dart';
 import '../../../core/widgets/radiance_card.dart';
@@ -178,6 +179,24 @@ class AdminDashboardView extends GetView<AdminController> {
               const Divider(color: Colors.white24, height: 1),
             ],
 
+            ListTile(
+              dense: true,
+              leading: const Icon(Icons.camera_alt, color: Color(0xFFFD1D1D), size: 18),
+              title: Text(AppStrings.instagramHandle, style: GoogleFonts.inter(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w600)),
+              subtitle: Text('Instagram Channel', style: GoogleFonts.inter(fontSize: 10, color: Colors.white54)),
+              onTap: () {
+                if (isDrawer) Get.back();
+                Get.snackbar(
+                  'Radiance Instagram',
+                  'Official channel: ${AppStrings.instagramHandle} • Rani Ka Bagh, Amritsar',
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: AppColors.primaryRoyalBlue,
+                  colorText: AppColors.pureWhite,
+                  duration: const Duration(seconds: 3),
+                );
+              },
+            ),
+            const Divider(color: Colors.white24, height: 1),
             ListTile(
               leading: const Icon(Icons.logout, color: Colors.white70, size: 20),
               title: Text(

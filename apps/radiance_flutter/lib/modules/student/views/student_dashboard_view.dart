@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/utils/currency_formatter.dart';
+import '../../../core/widgets/instagram_hub_card.dart';
 import '../../../core/widgets/radiance_app_bar.dart';
 import '../../../core/widgets/radiance_card.dart';
 import '../../../core/widgets/status_badge.dart';
@@ -183,6 +184,10 @@ class StudentDashboardView extends GetView<StudentController> {
                     );
                   },
                 ),
+                const SizedBox(height: 24),
+
+                // Live Instagram Community & Insights Hub
+                const InstagramHubCard(),
                 const SizedBox(height: 24),
 
                 // Enrolled Batches Section
