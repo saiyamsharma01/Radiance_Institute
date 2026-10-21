@@ -130,9 +130,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable} scroll-smooth`}>
       <head>
-        <link rel="icon" href="/images/radiance_logo.jpg" type="image/jpeg" />
-        <link rel="shortcut icon" href="/images/radiance_logo.jpg" type="image/jpeg" />
-        <link rel="apple-touch-icon" href="/images/radiance_logo.jpg" />
+        <link rel="icon" href="/images/radiance_logo.png" type="image/png" />
+        <link rel="shortcut icon" href="/images/radiance_logo.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/images/radiance_logo.png" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

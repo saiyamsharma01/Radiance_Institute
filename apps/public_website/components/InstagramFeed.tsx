@@ -195,13 +195,13 @@ export default function InstagramFeed() {
             <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-5">
               {/* Instagram Story Gradient Ring */}
               <div className="p-1 rounded-2xl bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600 shadow-md shrink-0">
-                <div className="p-1.5 bg-white rounded-xl">
-                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden flex items-center justify-center">
+                <div className="p-1 bg-white rounded-xl">
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden flex items-center justify-center bg-[#3c4c89]">
                     <Image
-                      src="/images/radiance_logo.jpg"
+                      src="/images/radiance_logo.png"
                       alt="Radiance Institute Instagram Profile"
                       fill
-                      className="object-contain"
+                      className="object-cover"
                     />
                   </div>
                 </div>
@@ -495,12 +495,12 @@ export default function InstagramFeed() {
                 <div>
                   {/* Institute Header */}
                   <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
-                    <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-slate-200 bg-white p-0.5 shrink-0">
+                    <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-slate-200/80 bg-[#3c4c89] shrink-0">
                       <Image
-                        src="/images/radiance_logo.jpg"
+                        src="/images/radiance_logo.png"
                         alt="Radiance"
                         fill
-                        className="object-contain rounded-lg"
+                        className="object-cover"
                       />
                     </div>
                     <div>

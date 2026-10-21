@@ -104,12 +104,12 @@ export default function Navbar() {
           <div className="flex justify-between items-center">
             {/* Logo & Institute Identity */}
             <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0 min-w-0">
-              <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden bg-white border border-slate-200 shadow-sm p-1 flex items-center justify-center group-hover:border-radiance-blue group-hover:shadow-md transition-all duration-200 shrink-0">
+              <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-xl overflow-hidden shadow-sm flex items-center justify-center group-hover:shadow-md group-hover:scale-105 transition-all duration-200 shrink-0 bg-[#3c4c89] border border-blue-900/30">
                 <Image
-                  src="/images/radiance_logo.jpg"
+                  src="/images/radiance_logo.png"
                   alt="Radiance Institute Logo"
                   fill
-                  className="object-contain p-0.5"
+                  className="object-cover"
                   priority
                 />
               </div>

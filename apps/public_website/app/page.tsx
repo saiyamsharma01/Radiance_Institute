@@ -149,12 +149,12 @@ export default function HomePage() {
                   <span>Admissions Open 2026–27</span>
                 </div>
 
-                <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl overflow-hidden mb-4 border-2 border-white/30 shadow-2xl bg-white p-2 flex items-center justify-center">
+                <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-3xl overflow-hidden mb-4 border-2 border-white/30 shadow-2xl shadow-blue-950/60 bg-[#3c4c89] flex items-center justify-center group hover:scale-105 transition-transform duration-300">
                   <Image
-                    src="/images/radiance_logo.jpg"
+                    src="/images/radiance_logo.png"
                     alt="Radiance Institute Crest"
                     fill
-                    className="object-contain p-1"
+                    className="object-cover"
                     priority
                   />
                 </div>

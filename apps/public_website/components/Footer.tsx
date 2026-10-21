@@ -19,12 +19,12 @@ export default function Footer() {
           {/* Col 1: Institute Brand & Identity */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-white p-1 border border-white/20 shadow-md shrink-0 flex items-center justify-center">
+              <div className="relative w-11 h-11 rounded-xl overflow-hidden bg-[#3c4c89] border border-white/20 shadow-lg shrink-0 flex items-center justify-center">
                 <Image
-                  src="/images/radiance_logo.jpg"
+                  src="/images/radiance_logo.png"
                   alt="Radiance Institute Logo"
                   fill
-                  className="object-contain p-0.5"
+                  className="object-cover"
                 />
               </div>
               <div>
