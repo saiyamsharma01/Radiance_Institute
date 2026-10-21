@@ -297,39 +297,41 @@ export default function InstagramFeed() {
         {/* Section Heading & Category Filters */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-pink-600 bg-pink-50 px-3 py-1 rounded-full mb-2">
+            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-pink-600 bg-pink-50 px-3 py-1 rounded-full mb-2 border border-pink-100">
               <Instagram className="w-3.5 h-3.5" />
               <span>Real-Time Institute Life</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Classroom Moments & Academic Feats
+            <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Classroom Moments &amp; Academic Feats
             </h2>
-            <p className="text-sm sm:text-base text-slate-600 mt-1">
+            <p className="text-xs sm:text-base text-slate-600 mt-1 leading-relaxed">
               Explore recent posts, concept reels, topper felicitations, and laboratory sessions.
             </p>
           </div>
 
-          {/* Category Filter Pills */}
-          <div className="flex flex-wrap items-center gap-2">
-            {[
-              { id: "all", label: "All Posts" },
-              { id: "physics", label: "Physics by Bedi Sir" },
-              { id: "toppers", label: "Toppers & Ranks" },
-              { id: "classroom", label: "Classrooms & Labs" },
-              { id: "tips", label: "Prep Tips" },
-            ].map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setActiveFilter(cat.id)}
-                className={`text-xs font-semibold px-4 py-2 rounded-full transition-all ${
-                  activeFilter === cat.id
-                    ? "bg-radiance-navy text-white shadow-md"
-                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
+          {/* Category Filter Pills (Scrollable on mobile) */}
+          <div className="w-full md:w-auto overflow-x-auto no-scrollbar pb-1">
+            <div className="flex items-center gap-2 min-w-max">
+              {[
+                { id: "all", label: "All Posts" },
+                { id: "physics", label: "Physics by Bedi Sir" },
+                { id: "toppers", label: "Toppers & Ranks" },
+                { id: "classroom", label: "Classrooms & Labs" },
+                { id: "tips", label: "Prep Tips" },
+              ].map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveFilter(cat.id)}
+                  className={`text-xs font-bold px-4 py-2 rounded-xl transition-all ${
+                    activeFilter === cat.id
+                      ? "bg-slate-900 text-white shadow-md shadow-slate-900/10"
+                      : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 

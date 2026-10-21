@@ -1,7 +1,20 @@
 import type { Metadata } from "next";
+import { Inter, Outfit } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://radianceinstitute.net"),
@@ -115,7 +128,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${outfit.variable} scroll-smooth`}>
       <head>
         <link rel="icon" href="/images/radiance_logo.jpg" type="image/jpeg" />
         <link rel="shortcut icon" href="/images/radiance_logo.jpg" type="image/jpeg" />
@@ -125,7 +138,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-white text-slate-800 antialiased">
+      <body className="min-h-screen flex flex-col bg-slate-50/50 text-slate-800 font-sans antialiased selection:bg-blue-600 selection:text-white">
         <Navbar />
         <main className="flex-grow">{children}</main>
         <Footer />

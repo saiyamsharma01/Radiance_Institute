@@ -125,15 +125,17 @@ export default function FloatingSocialWidget() {
       {/* Floating Pill / Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2.5 bg-gradient-to-r from-radiance-blue via-blue-700 to-indigo-800 hover:from-blue-700 hover:to-indigo-900 text-white px-5 py-3 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all group border-2 border-white/20"
+        aria-label="Connect with Radiance Institute"
+        className="flex items-center gap-2 bg-gradient-to-r from-radiance-blue via-blue-700 to-slate-900 text-white px-3.5 py-3 sm:px-5 sm:py-3 rounded-full shadow-2xl shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-105 active:scale-95 transition-all group border border-white/20"
       >
-        <span className="relative flex h-3 w-3">
+        <span className="relative flex h-2.5 w-2.5">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-400"></span>
+          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-400"></span>
         </span>
         <div className="flex items-center gap-1.5 text-xs font-bold tracking-wide">
           <Instagram className="w-4 h-4 text-pink-300" />
-          <span>Connect with Radiance</span>
+          <span className="hidden sm:inline">Connect with Radiance</span>
+          <span className="sm:hidden font-bold">Connect</span>
         </div>
       </button>
     </div>

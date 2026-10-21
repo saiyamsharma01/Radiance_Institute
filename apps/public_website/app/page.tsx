@@ -70,80 +70,99 @@ export default function HomePage() {
   return (
     <div className="relative">
       {/* 1. Hero Section */}
-      <section className="relative bg-gradient-to-br from-radiance-navy via-blue-950 to-radiance-blue text-white overflow-hidden py-20 lg:py-28">
-        <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
+      <section className="relative bg-gradient-to-br from-radiance-midnight via-radiance-navy to-[#103260] text-white overflow-hidden py-14 sm:py-20 lg:py-28">
+        {/* Modern ambient glow backdrop */}
+        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-blue-500/15 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 left-10 w-[400px] h-[400px] bg-amber-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             {/* Left Content */}
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+            <div className="lg:col-span-7 space-y-5 sm:space-y-6 text-center lg:text-left">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 text-xs font-semibold text-amber-300">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>Radiance Institute • Rani Ka Bagh, Amritsar (Unit of Bedi College)</span>
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20 text-[11px] sm:text-xs font-semibold text-amber-300 shadow-sm max-w-full">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span className="truncate">Rani Ka Bagh, Amritsar • Unit of Bedi College (Est. 1998)</span>
               </div>
 
               {/* Main Headline */}
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+              <h1 className="font-display text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.2] text-white">
                 Committed to Quality Education for{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-500">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-amber-200">
                   Classes 6 to 12
                 </span>
               </h1>
 
               {/* Sub-headline */}
-              <p className="text-base sm:text-lg text-slate-200 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
+              <p className="text-sm sm:text-base lg:text-lg text-slate-200 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
                 Empowering Amritsar&apos;s young minds with deep conceptual learning, structured classroom
                 pedagogy, and renowned Physics mentoring by{" "}
                 <strong className="text-white font-semibold">Er. Bedi Sir</strong> alongside specialized
-                coaching in <strong className="text-white font-semibold">Chemistry &amp; Mathematics</strong>.
+                guidance in <strong className="text-white font-semibold">Chemistry &amp; Mathematics</strong> for boards and JEE/NEET.
               </p>
 
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+              {/* Responsive CTA Buttons (Aesthetic on mobile & desktop) */}
+              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3">
                 <Link
                   href="/admissions"
-                  className="w-full sm:w-auto text-center bg-amber-400 hover:bg-amber-500 text-radiance-navy font-bold px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all"
+                  className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-radiance-navy font-bold px-7 py-3.5 rounded-xl shadow-lg shadow-amber-500/20 active:scale-95 transition-all text-sm"
                 >
-                  Submit Admission Enquiry
+                  <span>Submit Admission Enquiry</span>
+                  <ArrowRight className="w-4 h-4" />
                 </Link>
-                <a
-                  href="#calculator"
-                  className="w-full sm:w-auto text-center bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3.5 rounded-xl border border-white/20 backdrop-blur-sm transition-all"
-                >
-                  ⚡ Fee &amp; Scholarship Calculator
-                </a>
-                <a
-                  href="https://www.instagram.com/radiance_institute/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600/80 to-pink-600/80 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-5 py-3.5 rounded-xl border border-pink-400/40 backdrop-blur-sm transition-all text-sm"
-                >
-                  <Instagram className="w-4 h-4" />
-                  <span>@radiance_institute</span>
-                </a>
+
+                <div className="grid grid-cols-2 gap-2.5 sm:flex sm:items-center">
+                  <a
+                    href="#calculator"
+                    className="inline-flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 text-white font-semibold px-4 py-3.5 rounded-xl border border-white/20 backdrop-blur-sm transition-all text-xs sm:text-sm text-center"
+                  >
+                    <span>⚡ Fee Calculator</span>
+                  </a>
+                  <a
+                    href="https://www.instagram.com/radiance_institute/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-purple-600/60 to-pink-600/60 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-4 py-3.5 rounded-xl border border-pink-400/30 backdrop-blur-sm transition-all text-xs sm:text-sm text-center"
+                  >
+                    <Instagram className="w-3.5 h-3.5 text-pink-300" />
+                    <span>Instagram</span>
+                  </a>
+                </div>
               </div>
 
-              {/* Mini Stats Bar */}
-              <div className="pt-6 border-t border-white/15 grid grid-cols-3 gap-2 sm:gap-4 text-center sm:text-left">
-                <div className="p-1 sm:p-0">
-                  <div className="text-lg sm:text-2xl font-black text-amber-300">28+ Yrs</div>
-                  <div className="text-[10px] sm:text-xs text-slate-300 leading-tight mt-0.5">Academic Legacy</div>
-                </div>
-                <div className="p-1 sm:p-0">
-                  <div className="text-lg sm:text-2xl font-black text-amber-300">100 %ile</div>
-                  <div className="text-[10px] sm:text-xs text-slate-300 leading-tight mt-0.5">JEE Physics Peak</div>
-                </div>
-                <div className="p-1 sm:p-0">
-                  <div className="text-lg sm:text-2xl font-black text-amber-300">200+</div>
-                  <div className="text-[10px] sm:text-xs text-slate-300 leading-tight mt-0.5">Reels &amp; Posts</div>
+              {/* Mini Stats Card Strip */}
+              <div className="pt-4">
+                <div className="grid grid-cols-3 divide-x divide-white/15 bg-white/5 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-white/10 max-w-lg mx-auto lg:mx-0 shadow-lg">
+                  <div className="px-2 sm:px-3 text-center">
+                    <div className="font-display text-lg sm:text-2xl font-black text-amber-300">28+ Yrs</div>
+                    <div className="text-[10px] sm:text-xs text-slate-300 font-medium mt-0.5">Academic Legacy</div>
+                  </div>
+                  <div className="px-2 sm:px-3 text-center">
+                    <div className="font-display text-lg sm:text-2xl font-black text-amber-300">100 %ile</div>
+                    <div className="text-[10px] sm:text-xs text-slate-300 font-medium mt-0.5">JEE Physics Peak</div>
+                  </div>
+                  <div className="px-2 sm:px-3 text-center">
+                    <div className="font-display text-lg sm:text-2xl font-black text-amber-300">200+</div>
+                    <div className="text-[10px] sm:text-xs text-slate-300 font-medium mt-0.5">Reels &amp; Lectures</div>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Right Hero Visual Card */}
             <div className="lg:col-span-5 flex justify-center">
-              <div className="relative w-full max-w-xs sm:max-w-sm rounded-3xl bg-white/10 border border-white/20 p-6 sm:p-8 backdrop-blur-xl shadow-2xl flex flex-col justify-center items-center text-center">
-                <div className="relative w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden mb-5 border-2 border-white/30 shadow-2xl bg-white p-2 flex items-center justify-center">
+              <div className="relative w-full max-w-sm rounded-3xl bg-white/10 border border-white/20 p-6 sm:p-7 backdrop-blur-xl shadow-2xl flex flex-col justify-center items-center text-center">
+                {/* Admissions Open Live Pill */}
+                <div className="mb-4 inline-flex items-center gap-1.5 bg-amber-400/20 px-3 py-1 rounded-full border border-amber-400/40 text-amber-300 text-xs font-bold">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
+                  </span>
+                  <span>Admissions Open 2026–27</span>
+                </div>
+
+                <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl overflow-hidden mb-4 border-2 border-white/30 shadow-2xl bg-white p-2 flex items-center justify-center">
                   <Image
                     src="/images/radiance_logo.jpg"
                     alt="Radiance Institute Crest"
@@ -152,25 +171,28 @@ export default function HomePage() {
                     priority
                   />
                 </div>
-                <h3 className="text-2xl font-black text-white">Radiance Institute</h3>
-                <p className="text-xs text-amber-300 font-bold tracking-widest uppercase mt-1">
+                <h3 className="font-display text-xl sm:text-2xl font-black text-white">Radiance Institute</h3>
+                <p className="text-[11px] sm:text-xs text-amber-300 font-bold tracking-widest uppercase mt-0.5">
                   Unit of Bedi College of Physics
                 </p>
-                <div className="mt-5 pt-5 border-t border-white/15 w-full text-xs text-slate-200 space-y-1.5">
+
+                {/* Quick Info */}
+                <div className="mt-4 pt-4 border-t border-white/15 w-full text-xs text-slate-200 space-y-2">
                   <div className="flex items-center justify-center gap-1.5 text-slate-300">
                     <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                    <span>85-A, Rani Ka Bagh, Amritsar</span>
+                    <span className="truncate">85-A, Rani Ka Bagh, Amritsar</span>
                   </div>
-                  <div className="flex items-center justify-center gap-1.5 font-bold text-white text-sm">
+                  <div className="flex items-center justify-center gap-1.5 font-bold text-white text-xs sm:text-sm">
                     <Phone className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                    <span>+91 99141 22256 / 0183 508 0005</span>
+                    <span>+91 99141 22256</span>
                   </div>
                 </div>
 
+                {/* Batch Button */}
                 <div className="mt-5 w-full">
                   <a
                     href="#batches"
-                    className="block w-full py-2.5 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs transition-colors"
+                    className="block w-full py-2.5 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs transition-colors border border-white/20"
                   >
                     View Batch Timings &amp; Seats →
                   </a>
@@ -180,6 +202,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
 
       {/* 2. Key Pillars */}
       <section className="py-16 bg-slate-50 border-b border-slate-100">

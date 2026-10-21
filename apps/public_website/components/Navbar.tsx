@@ -103,8 +103,8 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             {/* Logo & Institute Identity */}
-            <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
-              <div className="relative w-11 h-11 sm:w-14 sm:h-14 rounded-xl overflow-hidden bg-white border border-slate-200/90 shadow-sm p-1 flex items-center justify-center group-hover:border-radiance-blue group-hover:shadow-md transition-all duration-200 shrink-0">
+            <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0 min-w-0">
+              <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden bg-white border border-slate-200 shadow-sm p-1 flex items-center justify-center group-hover:border-radiance-blue group-hover:shadow-md transition-all duration-200 shrink-0">
                 <Image
                   src="/images/radiance_logo.jpg"
                   alt="Radiance Institute Logo"
@@ -113,16 +113,16 @@ export default function Navbar() {
                   priority
                 />
               </div>
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <span className="font-black text-lg sm:text-xl text-radiance-navy tracking-tight group-hover:text-radiance-blue transition-colors">
+              <div className="flex flex-col min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-display font-black text-base sm:text-xl text-slate-900 tracking-tight group-hover:text-radiance-blue transition-colors truncate">
                     Radiance Institute
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px]">
-                  <span className="font-semibold text-slate-500">Unit of Bedi College</span>
-                  <span className="w-1 h-1 rounded-full bg-amber-500"></span>
-                  <span className="font-bold text-amber-600 tracking-wide uppercase text-[9px] sm:text-[10px]">
+                <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-slate-500">
+                  <span className="font-semibold text-slate-600 truncate">Bedi College</span>
+                  <span className="w-1 h-1 rounded-full bg-amber-500 shrink-0"></span>
+                  <span className="font-bold text-amber-600 tracking-wider uppercase text-[9px] sm:text-[10px] shrink-0">
                     Est. 1998
                   </span>
                 </div>
@@ -130,11 +130,11 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Navigation Menu (Organized & Sleek) */}
-            <nav className="hidden lg:flex items-center space-x-1 xl:space-x-2">
+            <nav className="hidden lg:flex items-center space-x-1 xl:space-x-1.5">
               {/* Home */}
               <Link
                 href="/"
-                className="px-3.5 py-2 text-sm font-semibold text-slate-700 hover:text-radiance-blue hover:bg-slate-50 rounded-xl transition-all"
+                className="px-3 py-2 text-sm font-semibold text-slate-700 hover:text-radiance-blue hover:bg-slate-100/70 rounded-xl transition-all"
               >
                 Home
               </Link>
@@ -146,15 +146,15 @@ export default function Navbar() {
                 onMouseLeave={handleMouseLeave}
               >
                 <button
-                  className={`flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl transition-all ${
+                  className={`flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-xl transition-all ${
                     activeDropdown === "programs"
-                      ? "text-radiance-blue bg-blue-50"
-                      : "text-slate-700 hover:text-radiance-blue hover:bg-slate-50"
+                      ? "text-radiance-blue bg-blue-50/80"
+                      : "text-slate-700 hover:text-radiance-blue hover:bg-slate-100/70"
                   }`}
                 >
                   <span>Programs</span>
                   <ChevronDown
-                    className={`w-4 h-4 transition-transform duration-200 ${
+                    className={`w-3.5 h-3.5 transition-transform duration-200 ${
                       activeDropdown === "programs" ? "rotate-180 text-radiance-blue" : "text-slate-400"
                     }`}
                   />
@@ -162,20 +162,20 @@ export default function Navbar() {
 
                 {/* Dropdown Menu */}
                 {activeDropdown === "programs" && (
-                  <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200/90 p-3 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                  <div className="absolute top-full left-0 mt-1.5 w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl shadow-slate-900/10 border border-slate-200/90 p-2.5 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
                     <div className="space-y-1">
                       <Link
                         href="/classes"
                         className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors group"
                       >
-                        <div className="w-9 h-9 rounded-lg bg-blue-50 text-radiance-blue flex items-center justify-center shrink-0 group-hover:bg-radiance-blue group-hover:text-white transition-colors">
+                        <div className="w-9 h-9 rounded-xl bg-blue-50 text-radiance-blue flex items-center justify-center shrink-0 group-hover:bg-radiance-blue group-hover:text-white transition-colors shadow-sm">
                           <BookOpen className="w-4 h-4" />
                         </div>
                         <div>
                           <div className="text-xs font-bold text-slate-900 group-hover:text-radiance-blue">
                             Classes 6 to 10 Foundation
                           </div>
-                          <div className="text-[11px] text-slate-500">
+                          <div className="text-[11px] text-slate-500 mt-0.5">
                             Pre-foundation, NTSE & Olympiad preparation
                           </div>
                         </div>
@@ -185,14 +185,14 @@ export default function Navbar() {
                         href="/subjects"
                         className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors group"
                       >
-                        <div className="w-9 h-9 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center shrink-0 group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                        <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0 group-hover:bg-amber-500 group-hover:text-white transition-colors shadow-sm">
                           <Atom className="w-4 h-4" />
                         </div>
                         <div>
                           <div className="text-xs font-bold text-slate-900 group-hover:text-radiance-blue">
                             Class 11 & 12 (PCM)
                           </div>
-                          <div className="text-[11px] text-slate-500">
+                          <div className="text-[11px] text-slate-500 mt-0.5">
                             Senior secondary boards, JEE & NEET prep
                           </div>
                         </div>
@@ -202,14 +202,14 @@ export default function Navbar() {
                         href="/about"
                         className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors group"
                       >
-                        <div className="w-9 h-9 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center shrink-0 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                        <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center shrink-0 group-hover:bg-purple-600 group-hover:text-white transition-colors shadow-sm">
                           <GraduationCap className="w-4 h-4" />
                         </div>
                         <div>
                           <div className="text-xs font-bold text-slate-900 group-hover:text-radiance-blue">
                             Physics by Er. Bedi Sir
                           </div>
-                          <div className="text-[11px] text-slate-500">
+                          <div className="text-[11px] text-slate-500 mt-0.5">
                             28+ years conceptual legacy & derivations
                           </div>
                         </div>
@@ -219,14 +219,14 @@ export default function Navbar() {
                         href="/#batches"
                         className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors group"
                       >
-                        <div className="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                        <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors shadow-sm">
                           <Calendar className="w-4 h-4" />
                         </div>
                         <div>
                           <div className="text-xs font-bold text-slate-900 group-hover:text-radiance-blue">
                             Batch Schedules & Seats
                           </div>
-                          <div className="text-[11px] text-slate-500">
+                          <div className="text-[11px] text-slate-500 mt-0.5">
                             Live batch timings & seats remaining
                           </div>
                         </div>
@@ -243,15 +243,15 @@ export default function Navbar() {
                 onMouseLeave={handleMouseLeave}
               >
                 <button
-                  className={`flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl transition-all ${
+                  className={`flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-xl transition-all ${
                     activeDropdown === "explore"
-                      ? "text-radiance-blue bg-blue-50"
-                      : "text-slate-700 hover:text-radiance-blue hover:bg-slate-50"
+                      ? "text-radiance-blue bg-blue-50/80"
+                      : "text-slate-700 hover:text-radiance-blue hover:bg-slate-100/70"
                   }`}
                 >
                   <span>Student Hub</span>
                   <ChevronDown
-                    className={`w-4 h-4 transition-transform duration-200 ${
+                    className={`w-3.5 h-3.5 transition-transform duration-200 ${
                       activeDropdown === "explore" ? "rotate-180 text-radiance-blue" : "text-slate-400"
                     }`}
                   />
@@ -259,38 +259,21 @@ export default function Navbar() {
 
                 {/* Dropdown Menu */}
                 {activeDropdown === "explore" && (
-                  <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200/90 p-3 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                  <div className="absolute top-full left-0 mt-1.5 w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl shadow-slate-900/10 border border-slate-200/90 p-2.5 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
                     <div className="space-y-1">
                       <Link
                         href="/#toppers"
                         className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors group"
                       >
-                        <div className="w-9 h-9 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                        <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:bg-amber-500 group-hover:text-white transition-colors shadow-sm">
                           <Trophy className="w-4 h-4" />
                         </div>
                         <div>
                           <div className="text-xs font-bold text-slate-900 group-hover:text-radiance-blue">
                             Toppers & Ranks
                           </div>
-                          <div className="text-[11px] text-slate-500">
+                          <div className="text-[11px] text-slate-500 mt-0.5">
                             City & State rankers in JEE & NEET
-                          </div>
-                        </div>
-                      </Link>
-
-                      <Link
-                        href="/#instagram-feed"
-                        className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors group"
-                      >
-                        <div className="w-9 h-9 rounded-lg bg-pink-50 text-pink-600 flex items-center justify-center shrink-0 group-hover:bg-pink-600 group-hover:text-white transition-colors">
-                          <Instagram className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <div className="text-xs font-bold text-slate-900 group-hover:text-radiance-blue">
-                            Instagram Highlights
-                          </div>
-                          <div className="text-[11px] text-slate-500">
-                            Reels, live lectures & classroom moments
                           </div>
                         </div>
                       </Link>
@@ -299,15 +282,32 @@ export default function Navbar() {
                         href="/#calculator"
                         className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors group"
                       >
-                        <div className="w-9 h-9 rounded-lg bg-blue-50 text-radiance-blue flex items-center justify-center shrink-0 group-hover:bg-radiance-blue group-hover:text-white transition-colors">
+                        <div className="w-9 h-9 rounded-xl bg-blue-50 text-radiance-blue flex items-center justify-center shrink-0 group-hover:bg-radiance-blue group-hover:text-white transition-colors shadow-sm">
                           <Calculator className="w-4 h-4" />
                         </div>
                         <div>
                           <div className="text-xs font-bold text-slate-900 group-hover:text-radiance-blue">
-                            Scholarship & Fee Calculator
+                            Scholarship Calculator
                           </div>
-                          <div className="text-[11px] text-slate-500">
+                          <div className="text-[11px] text-slate-500 mt-0.5">
                             Calculate fee waiver based on past marks
+                          </div>
+                        </div>
+                      </Link>
+
+                      <Link
+                        href="/#instagram-feed"
+                        className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors group"
+                      >
+                        <div className="w-9 h-9 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center shrink-0 group-hover:bg-pink-600 group-hover:text-white transition-colors shadow-sm">
+                          <Instagram className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-slate-900 group-hover:text-radiance-blue">
+                            Instagram Highlights
+                          </div>
+                          <div className="text-[11px] text-slate-500 mt-0.5">
+                            Reels, live lectures & classroom moments
                           </div>
                         </div>
                       </Link>
@@ -319,7 +319,7 @@ export default function Navbar() {
               {/* About Campus */}
               <Link
                 href="/about"
-                className="px-3.5 py-2 text-sm font-semibold text-slate-700 hover:text-radiance-blue hover:bg-slate-50 rounded-xl transition-all"
+                className="px-3 py-2 text-sm font-semibold text-slate-700 hover:text-radiance-blue hover:bg-slate-100/70 rounded-xl transition-all"
               >
                 About
               </Link>
@@ -327,7 +327,7 @@ export default function Navbar() {
               {/* Admissions */}
               <Link
                 href="/admissions"
-                className="px-3.5 py-2 text-sm font-semibold text-slate-700 hover:text-radiance-blue hover:bg-slate-50 rounded-xl transition-all"
+                className="px-3 py-2 text-sm font-semibold text-slate-700 hover:text-radiance-blue hover:bg-slate-100/70 rounded-xl transition-all"
               >
                 Admissions
               </Link>
@@ -335,20 +335,20 @@ export default function Navbar() {
               {/* Contact */}
               <Link
                 href="/contact"
-                className="px-3.5 py-2 text-sm font-semibold text-slate-700 hover:text-radiance-blue hover:bg-slate-50 rounded-xl transition-all"
+                className="px-3 py-2 text-sm font-semibold text-slate-700 hover:text-radiance-blue hover:bg-slate-100/70 rounded-xl transition-all"
               >
                 Contact
               </Link>
             </nav>
 
             {/* Desktop Action Buttons (Right) */}
-            <div className="hidden lg:flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-2.5">
               {/* Instagram Follow Button */}
               <a
                 href="https://www.instagram.com/radiance_institute/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative p-2.5 rounded-xl border border-slate-200 text-slate-700 hover:text-white transition-all overflow-hidden"
+                className="group relative p-2.5 rounded-xl border border-slate-200 text-slate-700 hover:text-white transition-all overflow-hidden bg-slate-50 hover:border-pink-500"
                 title="Follow @radiance_institute on Instagram"
               >
                 <span className="absolute inset-0 bg-gradient-to-tr from-amber-500 via-pink-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity"></span>
@@ -358,157 +358,218 @@ export default function Navbar() {
               {/* Enquire Now CTA Button */}
               <Link
                 href="/admissions"
-                className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-radiance-blue to-blue-700 hover:from-blue-700 hover:to-radiance-navy text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-md hover:shadow-xl hover:shadow-blue-500/20 active:scale-95 transition-all duration-200"
+                className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-radiance-blue to-blue-700 hover:from-blue-700 hover:to-radiance-navy text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-md shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30 active:scale-95 transition-all duration-200"
               >
                 <span>Enquire Now</span>
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
 
-            {/* Mobile Menu Trigger */}
-            <div className="lg:hidden flex items-center gap-2">
+            {/* Mobile Actions & Menu Trigger */}
+            <div className="lg:hidden flex items-center gap-1.5 sm:gap-2">
+              <a
+                href="tel:+919914122256"
+                aria-label="Call Radiance Institute"
+                className="p-2 sm:p-2.5 rounded-xl text-radiance-blue bg-blue-50 border border-blue-100/80 active:scale-95 transition-all"
+              >
+                <Phone className="w-4 h-4" />
+              </a>
+
               <a
                 href="https://www.instagram.com/radiance_institute/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-lg text-pink-600 bg-pink-50"
+                aria-label="Follow Instagram"
+                className="p-2 sm:p-2.5 rounded-xl text-pink-600 bg-pink-50 border border-pink-100/80 active:scale-95 transition-all"
               >
-                <Instagram className="w-5 h-5" />
+                <Instagram className="w-4 h-4" />
               </a>
 
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-xl text-slate-800 hover:bg-slate-100 transition-colors"
+                className={`p-2 sm:p-2.5 rounded-xl transition-all ${
+                  mobileMenuOpen
+                    ? "bg-slate-900 text-white shadow-sm"
+                    : "bg-slate-100 text-slate-800 hover:bg-slate-200"
+                }`}
                 aria-label="Toggle navigation menu"
               >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6 text-radiance-navy" />}
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 3. Mobile Navigation Drawer */}
+      {/* 3. Mobile Navigation Drawer (Aesthetic, Responsive, Touch-Friendly) */}
       {mobileMenuOpen && (
-        <div className="lg:hidden absolute top-full inset-x-0 bg-white/98 backdrop-blur-xl border-t border-slate-200 overflow-y-auto p-5 space-y-6 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200 z-50 max-h-[calc(100vh-70px)]">
-          {/* Quick Links Group */}
-          <div className="space-y-1">
-            <Link
-              href="/"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between px-4 py-3 rounded-xl font-bold text-sm text-slate-800 hover:bg-slate-50"
-            >
-              <span>Home</span>
-              <span className="text-xs text-slate-400">→</span>
-            </Link>
+        <div className="lg:hidden fixed inset-x-0 top-[60px] sm:top-[68px] bottom-0 bg-slate-900/60 backdrop-blur-sm z-50 animate-in fade-in duration-200">
+          <div className="h-full max-h-[calc(100vh-68px)] overflow-y-auto bg-white/98 backdrop-blur-2xl shadow-2xl border-t border-slate-200/80 flex flex-col justify-between">
+            <div className="p-4 sm:p-6 space-y-5">
+              {/* Quick Contact Action Bar on Mobile */}
+              <div className="grid grid-cols-2 gap-2 bg-slate-50 p-2 rounded-2xl border border-slate-200/80">
+                <a
+                  href="https://wa.me/919914122256?text=Hello%20Radiance%20Institute,%20I%20would%20like%20to%20enquire%20about%20admissions."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2.5 rounded-xl shadow-sm transition-all"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>WhatsApp</span>
+                </a>
+                <a
+                  href="tel:+919914122256"
+                  className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2.5 rounded-xl shadow-sm transition-all"
+                >
+                  <Phone className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Call Campus</span>
+                </a>
+              </div>
 
-            <div className="pt-2 pb-1 px-4 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-              Academic Programs
+              {/* Main Links */}
+              <div className="space-y-1">
+                <Link
+                  href="/"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-sm text-slate-900 hover:bg-blue-50/70 hover:text-radiance-blue transition-colors"
+                >
+                  <span>Home</span>
+                  <span className="text-slate-400 text-xs">→</span>
+                </Link>
+
+                <div className="pt-3 pb-1.5 px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                  Academic Curriculum
+                </div>
+
+                <Link
+                  href="/classes"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-radiance-blue transition-colors"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-blue-50 text-radiance-blue flex items-center justify-center shrink-0">
+                    <BookOpen className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <span className="block font-bold text-slate-900">Classes 6 to 10 Foundation</span>
+                    <span className="text-[10px] text-slate-500">Olympiad &amp; NTSE Excellence</span>
+                  </div>
+                </Link>
+
+                <Link
+                  href="/subjects"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-radiance-blue transition-colors"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                    <Atom className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <span className="block font-bold text-slate-900">Class 11 &amp; 12 PCM / Medical</span>
+                    <span className="text-[10px] text-slate-500">Physics, Chemistry, Maths &amp; JEE/NEET</span>
+                  </div>
+                </Link>
+
+                <Link
+                  href="/about"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-radiance-blue transition-colors"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                    <GraduationCap className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <span className="block font-bold text-slate-900">Physics by Er. Bedi Sir</span>
+                    <span className="text-[10px] text-slate-500">28+ Years of Conceptual Mentoring</span>
+                  </div>
+                </Link>
+
+                <div className="pt-3 pb-1.5 px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                  Student Tools &amp; Highlights
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <Link
+                    href="/#batches"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="p-3 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-200/80 transition-colors"
+                  >
+                    <Calendar className="w-4 h-4 text-radiance-blue mb-1" />
+                    <span className="block font-bold text-xs text-slate-900">Batch Timings</span>
+                    <span className="text-[10px] text-slate-500">Live seat count</span>
+                  </Link>
+
+                  <Link
+                    href="/#calculator"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="p-3 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-200/80 transition-colors"
+                  >
+                    <Calculator className="w-4 h-4 text-amber-600 mb-1" />
+                    <span className="block font-bold text-xs text-slate-900">Fee Calculator</span>
+                    <span className="text-[10px] text-slate-500">Up to 30% waiver</span>
+                  </Link>
+
+                  <Link
+                    href="/#toppers"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="p-3 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-200/80 transition-colors"
+                  >
+                    <Trophy className="w-4 h-4 text-amber-500 mb-1" />
+                    <span className="block font-bold text-xs text-slate-900">Toppers Hall</span>
+                    <span className="text-[10px] text-slate-500">JEE &amp; NEET Ranks</span>
+                  </Link>
+
+                  <Link
+                    href="/#instagram-feed"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="p-3 rounded-xl bg-slate-50 hover:bg-pink-50 border border-slate-200/80 transition-colors"
+                  >
+                    <Instagram className="w-4 h-4 text-pink-600 mb-1" />
+                    <span className="block font-bold text-xs text-slate-900">Instagram</span>
+                    <span className="text-[10px] text-slate-500">Reels &amp; Lectures</span>
+                  </Link>
+                </div>
+
+                <div className="pt-3 pb-1.5 px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                  Campus &amp; Location
+                </div>
+
+                <div className="flex gap-2">
+                  <Link
+                    href="/about"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex-1 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-700 text-center"
+                  >
+                    Campus Legacy
+                  </Link>
+                  <Link
+                    href="/contact"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex-1 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-700 text-center"
+                  >
+                    Directions &amp; Map
+                  </Link>
+                </div>
+              </div>
             </div>
-            <Link
-              href="/classes"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 hover:bg-slate-50"
-            >
-              📚 Classes 6–10 Foundation (NTSE & Olympiads)
-            </Link>
-            <Link
-              href="/subjects"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 hover:bg-slate-50"
-            >
-              ⚛️ Senior Secondary PCM & Physics (Er. Bedi Sir)
-            </Link>
-            <Link
-              href="/#batches"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 hover:bg-slate-50"
-            >
-              ⏱️ Batch Timings & Seat Capacities
-            </Link>
 
-            <div className="pt-3 pb-1 px-4 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-              Student Hub & Highlights
-            </div>
-            <Link
-              href="/#toppers"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 hover:bg-slate-50"
-            >
-              🏆 Toppers & Hall of Fame
-            </Link>
-            <Link
-              href="/#calculator"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 hover:bg-slate-50"
-            >
-              ⚡ Fee & Scholarship Calculator
-            </Link>
-            <Link
-              href="/#instagram-feed"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 hover:bg-slate-50"
-            >
-              📸 Instagram Channel (@radiance_institute)
-            </Link>
-
-            <div className="pt-3 pb-1 px-4 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-              Institute Info
-            </div>
-            <Link
-              href="/about"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 hover:bg-slate-50"
-            >
-              🏛️ About Campus & Legacy
-            </Link>
-            <Link
-              href="/contact"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 hover:bg-slate-50"
-            >
-              📍 Campus Directions & Visiting Hours
-            </Link>
-          </div>
-
-          {/* Action CTAs in Mobile */}
-          <div className="space-y-2.5 pt-3 border-t border-slate-100">
-            <Link
-              href="/admissions"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full inline-flex items-center justify-center gap-2 bg-radiance-blue text-white font-bold text-xs sm:text-sm py-3.5 rounded-xl shadow-lg"
-            >
-              <span>Submit Admission Enquiry</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-
-            <div className="grid grid-cols-2 gap-2">
-              <a
-                href="https://wa.me/919914122256?text=Hello%20Radiance%20Institute,%20I%20would%20like%20to%20enquire%20about%20admissions."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-1.5 bg-emerald-600 text-white font-bold text-xs py-3 rounded-xl shadow"
+            {/* Pinned Bottom CTA in Mobile Drawer */}
+            <div className="p-4 bg-white border-t border-slate-200/80 space-y-2 sticky bottom-0">
+              <Link
+                href="/admissions"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-radiance-blue via-blue-700 to-radiance-navy text-white font-bold text-xs sm:text-sm py-3.5 rounded-xl shadow-lg shadow-blue-500/25 active:scale-95 transition-all"
               >
-                <MessageCircle className="w-3.5 h-3.5" />
-                <span>WhatsApp</span>
-              </a>
-
-              <a
-                href="tel:+919914122256"
-                className="inline-flex items-center justify-center gap-1.5 bg-slate-900 text-white font-bold text-xs py-3 rounded-xl shadow"
-              >
-                <Phone className="w-3.5 h-3.5 text-amber-400" />
-                <span>Call Campus</span>
-              </a>
+                <span>Submit Admission Enquiry 2026–27</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <p className="text-center text-[10px] text-slate-500">
+                85-A, Rani Ka Bagh, Amritsar • Helpline: +91 99141 22256
+              </p>
             </div>
-          </div>
-
-          {/* Campus Helpline Footer */}
-          <div className="pt-2 text-center text-[11px] text-slate-400 border-t border-slate-100">
-            85-A, Rani Ka Bagh, Amritsar • Helpline: +91 99141 22256
           </div>
         </div>
       )}
     </header>
   );
 }
+

@@ -129,57 +129,57 @@ export default function CourseFeeCalculator() {
   const quarterlyInstallment = Math.round(netAnnualFee / 4);
 
   return (
-    <section className="py-20 bg-slate-50 relative overflow-hidden" id="calculator">
+    <section className="py-16 sm:py-20 bg-slate-50/50 relative overflow-hidden" id="calculator">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 bg-blue-100/70 text-radiance-blue text-xs font-bold px-3.5 py-1.5 rounded-full mb-3">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
+          <div className="inline-flex items-center gap-2 bg-blue-100/70 text-radiance-blue text-xs font-bold px-3.5 py-1.5 rounded-full mb-3 border border-blue-200">
             <Calculator className="w-3.5 h-3.5" />
             <span>Interactive Transparency Tool</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-radiance-navy tracking-tight">
-            Fee Estimator & Merit Scholarship Calculator
+          <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+            Fee Estimator &amp; Merit Scholarship Calculator
           </h2>
-          <p className="text-base text-slate-600 mt-2">
+          <p className="text-xs sm:text-base text-slate-600 mt-2 leading-relaxed">
             Calculate your personalized tuition plan, explore flexible payment installments, and
             check your instant scholarship eligibility based on previous academic performance.
           </p>
         </div>
 
         {/* Interactive Calculator Body */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
           {/* Left Column: Form Controls */}
-          <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-md space-y-7">
+          <div className="lg:col-span-7 bg-white rounded-3xl p-5 sm:p-8 border border-slate-200/90 shadow-md space-y-6 sm:space-y-7">
             {/* Step 1: Select Academic Program */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-                1. Select Academic Grade & Program
+              <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-3">
+                1. Select Academic Grade &amp; Program
               </label>
               <div className="space-y-2.5">
                 {PROGRAM_PLANS.map((plan) => (
                   <div
                     key={plan.id}
                     onClick={() => setSelectedPlanId(plan.id)}
-                    className={`cursor-pointer rounded-2xl p-4 border transition-all flex items-center justify-between ${
+                    className={`cursor-pointer rounded-2xl p-3.5 sm:p-4 border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${
                       selectedPlanId === plan.id
                         ? "border-radiance-blue bg-blue-50/50 shadow-sm"
                         : "border-slate-200 hover:border-slate-300 bg-white"
                     }`}
                   >
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                        <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
                           {plan.classLevel}
                         </span>
-                        <h4 className="font-bold text-slate-900 text-sm">{plan.name}</h4>
+                        <h4 className="font-display font-bold text-slate-900 text-sm">{plan.name}</h4>
                       </div>
-                      <p className="text-xs text-slate-500 mt-1">
+                      <p className="text-[11px] sm:text-xs text-slate-500 mt-1">
                         Subjects: {plan.subjects.join(", ")}
                       </p>
                     </div>
-                    <div className="text-right pl-3 shrink-0">
-                      <span className="text-xs text-slate-400 block">Base Annual</span>
-                      <span className="text-sm font-bold text-slate-900">
+                    <div className="text-left sm:text-right sm:pl-3 shrink-0 flex sm:flex-col items-center sm:items-end justify-between border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-100">
+                      <span className="text-[10px] text-slate-400 block sm:mb-0.5">Base Annual</span>
+                      <span className="text-sm sm:text-base font-extrabold text-slate-900">
                         ₹{plan.baseAnnualFee.toLocaleString("en-IN")}
                       </span>
                     </div>
@@ -191,10 +191,10 @@ export default function CourseFeeCalculator() {
             {/* Step 2: Previous Exam Marks Slider */}
             <div>
               <div className="flex justify-between items-center mb-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                  2. Your Previous Class / Board Score (%)
+                <label className="text-xs font-black uppercase tracking-wider text-slate-500">
+                  2. Previous Board / Class Score (%)
                 </label>
-                <span className="text-base font-extrabold text-radiance-blue bg-blue-50 px-3 py-1 rounded-xl border border-blue-200">
+                <span className="font-display text-sm sm:text-base font-black text-radiance-blue bg-blue-50 px-3 py-1 rounded-xl border border-blue-200">
                   {previousMarks}%
                 </span>
               </div>
@@ -206,21 +206,21 @@ export default function CourseFeeCalculator() {
                 onChange={(e) => setPreviousMarks(Number(e.target.value))}
                 className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-radiance-blue"
               />
-              <div className="flex justify-between text-[11px] text-slate-400 mt-1 font-medium">
+              <div className="flex justify-between text-[10px] sm:text-[11px] text-slate-400 mt-1 font-semibold">
                 <span>50%</span>
-                <span>80% (10% Off)</span>
-                <span>90% (20% Off)</span>
-                <span>95%+ (30% Off)</span>
+                <span>80% (10% off)</span>
+                <span>90% (20% off)</span>
+                <span>95%+ (30% off)</span>
                 <span>100%</span>
               </div>
 
               {/* Scholarship Tier Badge */}
-              <div className="mt-3 p-3 bg-amber-50 rounded-xl border border-amber-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 sm:gap-2">
+              <div className="mt-3 p-3 bg-amber-50 rounded-xl border border-amber-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <span className="text-xs font-bold text-amber-900 flex items-center gap-1.5">
                   <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
                   <span>{scholarshipBadge}</span>
                 </span>
-                <span className="text-xs font-extrabold text-amber-700 bg-amber-100/60 px-2 py-0.5 rounded">
+                <span className="text-xs font-black text-amber-700 bg-amber-100/70 px-2.5 py-0.5 rounded-lg shrink-0">
                   Save ₹{discountAmount.toLocaleString("en-IN")}
                 </span>
               </div>
@@ -228,7 +228,7 @@ export default function CourseFeeCalculator() {
 
             {/* Step 3: Installment Mode */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+              <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">
                 3. Choose Payment Structure
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -237,7 +237,7 @@ export default function CourseFeeCalculator() {
                   onClick={() => setSelectedInstallmentPlan("quarterly")}
                   className={`p-3.5 rounded-xl border text-left transition-all ${
                     selectedInstallmentPlan === "quarterly"
-                      ? "border-radiance-blue bg-blue-50 text-radiance-navy font-bold shadow-sm"
+                      ? "border-radiance-blue bg-blue-50/70 text-radiance-navy font-bold shadow-sm"
                       : "border-slate-200 text-slate-600 hover:bg-slate-50"
                   }`}
                 >
@@ -255,7 +255,7 @@ export default function CourseFeeCalculator() {
                   onClick={() => setSelectedInstallmentPlan("annual")}
                   className={`p-3.5 rounded-xl border text-left transition-all ${
                     selectedInstallmentPlan === "annual"
-                      ? "border-radiance-blue bg-blue-50 text-radiance-navy font-bold shadow-sm"
+                      ? "border-radiance-blue bg-blue-50/70 text-radiance-navy font-bold shadow-sm"
                       : "border-slate-200 text-slate-600 hover:bg-slate-50"
                   }`}
                 >
@@ -272,30 +272,30 @@ export default function CourseFeeCalculator() {
           </div>
 
           {/* Right Column: Instant Fee Breakdown Card */}
-          <div className="lg:col-span-5 bg-gradient-to-br from-radiance-navy to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col justify-between">
+          <div className="lg:col-span-5 bg-gradient-to-br from-radiance-midnight via-radiance-navy to-[#0E2648] text-white rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col justify-between border border-white/10">
             {/* Background pattern */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-radiance-blue/20 rounded-full blur-2xl pointer-events-none" />
 
-            <div className="relative z-10 space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b border-white/10">
-                <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider">
+            <div className="relative z-10 space-y-5 sm:space-y-6">
+              <div className="flex items-center justify-between pb-3.5 border-b border-white/10">
+                <span className="text-[11px] font-bold text-amber-400 uppercase tracking-wider">
                   Live Fee Quote
                 </span>
-                <span className="text-xs text-slate-300">{selectedPlan.duration}</span>
+                <span className="text-xs text-slate-300 font-medium">{selectedPlan.duration}</span>
               </div>
 
               <div>
-                <h3 className="text-xl sm:text-2xl font-bold">{selectedPlan.name}</h3>
+                <h3 className="font-display text-lg sm:text-2xl font-bold">{selectedPlan.name}</h3>
                 <p className="text-xs text-slate-300 mt-1">
                   Classroom coaching at 85-A, Rani Ka Bagh, Amritsar
                 </p>
               </div>
 
               {/* Price Calculation Table */}
-              <div className="space-y-3 bg-white/5 rounded-2xl p-4 border border-white/10 text-xs sm:text-sm">
+              <div className="space-y-2.5 bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 text-xs sm:text-sm">
                 <div className="flex justify-between text-slate-300">
                   <span>Gross Tuition Fee:</span>
-                  <span>₹{selectedPlan.baseAnnualFee.toLocaleString("en-IN")}</span>
+                  <span className="font-medium">₹{selectedPlan.baseAnnualFee.toLocaleString("en-IN")}</span>
                 </div>
 
                 {scholarshipPercent > 0 && (
@@ -306,26 +306,26 @@ export default function CourseFeeCalculator() {
                 )}
 
                 <div className="flex justify-between text-slate-300">
-                  <span>Study Modules & DPPs:</span>
+                  <span>Study Modules &amp; DPPs:</span>
                   <span className="text-emerald-400 font-medium">Included (₹0)</span>
                 </div>
 
                 <div className="flex justify-between text-slate-300">
-                  <span>Sunday Test Series & Analytics:</span>
+                  <span>Sunday Test Series &amp; Analytics:</span>
                   <span className="text-emerald-400 font-medium">Included (₹0)</span>
                 </div>
 
                 <div className="pt-3 border-t border-white/15 flex justify-between items-baseline">
-                  <span className="text-sm font-bold text-white">Net Total Fee:</span>
-                  <span className="text-2xl sm:text-3xl font-extrabold text-amber-400">
+                  <span className="text-xs sm:text-sm font-bold text-white">Net Total Fee:</span>
+                  <span className="font-display text-2xl sm:text-3xl font-black text-amber-400">
                     ₹{netAnnualFee.toLocaleString("en-IN")}
                   </span>
                 </div>
 
                 {selectedInstallmentPlan === "quarterly" && (
-                  <div className="text-[11px] text-slate-300 bg-white/10 p-2.5 rounded-lg text-center mt-2">
+                  <div className="text-[11px] text-slate-300 bg-white/10 p-2.5 rounded-xl text-center mt-2 border border-white/10">
                     Payable in 4 easy installments of{" "}
-                    <strong className="text-white text-xs">
+                    <strong className="text-white text-xs font-bold">
                       ₹{quarterlyInstallment.toLocaleString("en-IN")} / quarter
                     </strong>
                   </div>
@@ -334,7 +334,7 @@ export default function CourseFeeCalculator() {
 
               {/* Plan Highlights */}
               <div className="space-y-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                   What's included in this program:
                 </span>
                 <ul className="space-y-1.5 text-xs text-slate-200">
@@ -349,18 +349,18 @@ export default function CourseFeeCalculator() {
             </div>
 
             {/* Action CTA */}
-            <div className="relative z-10 pt-6 mt-6 border-t border-white/10 space-y-3">
+            <div className="relative z-10 pt-5 mt-6 border-t border-white/10 space-y-3">
               <Link
                 href={`/admissions?classLevel=${encodeURIComponent(
                   selectedPlan.classLevel
                 )}&program=${encodeURIComponent(selectedPlan.name)}`}
-                className="w-full inline-flex items-center justify-center gap-2 bg-amber-400 hover:bg-amber-500 text-radiance-navy font-bold text-sm py-3.5 px-6 rounded-xl shadow-lg transition-all"
+                className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-radiance-navy font-bold text-sm py-3.5 px-6 rounded-xl shadow-lg shadow-amber-500/20 active:scale-95 transition-all"
               >
                 <span>Enquire With This Fee Plan</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-400 text-center">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 <span>Zero hidden charges • 3-Day risk-free trial classes included</span>
               </div>
             </div>
