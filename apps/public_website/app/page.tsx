@@ -21,6 +21,7 @@ import ToppersShowcase from "@/components/ToppersShowcase";
 import CourseFeeCalculator from "@/components/CourseFeeCalculator";
 import BatchScheduleExplorer from "@/components/BatchScheduleExplorer";
 import FloatingSocialWidget from "@/components/FloatingSocialWidget";
+import AnimatedStatsStrip from "@/components/AnimatedStatsStrip";
 
 export default function HomePage() {
   const academicOfferings = [
@@ -131,24 +132,10 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Mini Stats Card Strip */}
-              <div className="pt-4">
-                <div className="grid grid-cols-3 divide-x divide-white/15 bg-white/5 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-white/10 max-w-lg mx-auto lg:mx-0 shadow-lg">
-                  <div className="px-2 sm:px-3 text-center">
-                    <div className="font-display text-lg sm:text-2xl font-black text-amber-300">28+ Yrs</div>
-                    <div className="text-[10px] sm:text-xs text-slate-300 font-medium mt-0.5">Academic Legacy</div>
-                  </div>
-                  <div className="px-2 sm:px-3 text-center">
-                    <div className="font-display text-lg sm:text-2xl font-black text-amber-300">100 %ile</div>
-                    <div className="text-[10px] sm:text-xs text-slate-300 font-medium mt-0.5">JEE Physics Peak</div>
-                  </div>
-                  <div className="px-2 sm:px-3 text-center">
-                    <div className="font-display text-lg sm:text-2xl font-black text-amber-300">200+</div>
-                    <div className="text-[10px] sm:text-xs text-slate-300 font-medium mt-0.5">Reels &amp; Lectures</div>
-                  </div>
-                </div>
-              </div>
+              {/* Dynamic Animated Mini Stats Card Strip */}
+              <AnimatedStatsStrip />
             </div>
+
 
             {/* Right Hero Visual Card */}
             <div className="lg:col-span-5 flex justify-center">

@@ -11,6 +11,7 @@ import {
   Quote,
   CheckCircle,
 } from "lucide-react";
+import AnimatedCounter from "@/components/AnimatedCounter";
 
 interface Topper {
   id: string;
@@ -222,22 +223,30 @@ export default function ToppersShowcase() {
           ))}
         </div>
 
-        {/* Bottom Stat Banner */}
+        {/* Bottom Stat Banner with Dynamic Animated Counters */}
         <div className="mt-12 sm:mt-16 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 bg-gradient-to-br from-radiance-midnight via-radiance-navy to-[#0F2848] text-white rounded-3xl p-6 sm:p-8 text-center shadow-xl border border-white/10">
           <div className="p-2 sm:p-0">
-            <div className="font-display text-2xl sm:text-3xl font-black text-amber-400">98.6%</div>
+            <div className="font-display text-2xl sm:text-3xl font-black text-amber-400">
+              <AnimatedCounter target={98.6} decimals={1} suffix="%" />
+            </div>
             <p className="text-[11px] sm:text-xs text-slate-300 mt-1 font-medium">Board Distinction Rate</p>
           </div>
           <div className="p-2 sm:p-0">
-            <div className="font-display text-2xl sm:text-3xl font-black text-amber-400">45+</div>
+            <div className="font-display text-2xl sm:text-3xl font-black text-amber-400">
+              <AnimatedCounter target={45} suffix="+" />
+            </div>
             <p className="text-[11px] sm:text-xs text-slate-300 mt-1 font-medium">IIT / NIT / AIIMS Ranks</p>
           </div>
           <div className="p-2 sm:p-0">
-            <div className="font-display text-2xl sm:text-3xl font-black text-amber-400">25:1</div>
+            <div className="font-display text-2xl sm:text-3xl font-black text-amber-400">
+              <AnimatedCounter target={25} suffix=":1" />
+            </div>
             <p className="text-[11px] sm:text-xs text-slate-300 mt-1 font-medium">Max Student-Teacher Ratio</p>
           </div>
           <div className="p-2 sm:p-0">
-            <div className="font-display text-2xl sm:text-3xl font-black text-amber-400">28+</div>
+            <div className="font-display text-2xl sm:text-3xl font-black text-amber-400">
+              <AnimatedCounter target={28} suffix="+" />
+            </div>
             <p className="text-[11px] sm:text-xs text-slate-300 mt-1 font-medium">Years Academic Legacy</p>
           </div>
         </div>
