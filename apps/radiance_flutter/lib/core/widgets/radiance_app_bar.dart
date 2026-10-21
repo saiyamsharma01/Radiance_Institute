@@ -64,7 +64,7 @@ class RadianceAppBar extends StatelessWidget implements PreferredSizeWidget {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: AppColors.pureWhite,
+                      color: const Color(0xFF3C4C89),
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
@@ -81,7 +81,7 @@ class RadianceAppBar extends StatelessWidget implements PreferredSizeWidget {
                     child: ClipOval(
                       child: Image.asset(
                         'assets/images/radiance_logo.jpg',
-                        fit: BoxFit.contain,
+                        fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => const Icon(
                           Icons.school,
                           color: AppColors.primaryRoyalBlue,

@@ -406,6 +406,26 @@ export default function Navbar() {
         <div className="lg:hidden fixed inset-x-0 top-[60px] sm:top-[68px] bottom-0 bg-slate-900/60 backdrop-blur-sm z-50 animate-in fade-in duration-200">
           <div className="h-full max-h-[calc(100vh-68px)] overflow-y-auto bg-white/98 backdrop-blur-2xl shadow-2xl border-t border-slate-200/80 flex flex-col justify-between">
             <div className="p-4 sm:p-6 space-y-5">
+              {/* Institute Brand Header in Drawer */}
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 text-white shadow-md">
+                <div className="relative h-11 w-11 flex-shrink-0 overflow-hidden rounded-xl bg-[#3c4c89] border border-white/20 shadow-inner">
+                  <Image
+                    src="/images/radiance_logo.png"
+                    alt="Radiance Institute Logo"
+                    fill
+                    sizes="44px"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-heading font-black text-sm tracking-tight text-white">RADIANCE</span>
+                    <span className="rounded-full bg-blue-500/30 px-1.5 py-0.2 text-[9px] font-bold uppercase text-blue-200">ACADEMY</span>
+                  </div>
+                  <p className="text-[10px] text-slate-300 truncate">Senior Secondary &amp; Competitive Excellence</p>
+                </div>
+              </div>
+
               {/* Quick Contact Action Bar on Mobile */}
               <div className="grid grid-cols-2 gap-2 bg-slate-50 p-2 rounded-2xl border border-slate-200/80">
                 <a

@@ -96,7 +96,7 @@ class AdminDashboardView extends GetView<AdminController> {
                     width: 40,
                     height: 40,
                     decoration: const BoxDecoration(
-                      color: AppColors.pureWhite,
+                      color: Color(0xFF3C4C89),
                       shape: BoxShape.circle,
                     ),
                     clipBehavior: Clip.antiAlias,

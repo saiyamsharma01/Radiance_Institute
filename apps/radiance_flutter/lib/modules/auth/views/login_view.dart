@@ -91,7 +91,7 @@ class LoginView extends GetView<AuthController> {
                           ),
                           child: Container(
                             decoration: const BoxDecoration(
-                              color: AppColors.pureWhite,
+                              color: Color(0xFF3C4C89),
                               shape: BoxShape.circle,
                             ),
                             clipBehavior: Clip.antiAlias,
