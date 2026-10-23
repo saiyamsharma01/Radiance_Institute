@@ -16,6 +16,8 @@ import 'modules/common/views/notifications_view.dart';
 import 'modules/parent/controllers/parent_controller.dart';
 import 'modules/parent/views/parent_child_linking_view.dart';
 import 'modules/parent/views/parent_dashboard_view.dart';
+import 'modules/splash/controllers/splash_controller.dart';
+import 'modules/splash/views/splash_view.dart';
 import 'modules/student/controllers/student_controller.dart';
 import 'modules/student/views/student_attendance_view.dart';
 import 'modules/student/views/student_dashboard_view.dart';
@@ -41,6 +43,7 @@ void main() {
   Get.put<IInstituteRepository>(instituteRepo, permanent: true);
 
   // Initialize Core Controllers
+  Get.put<SplashController>(SplashController(authRepo: authRepo), permanent: true);
   Get.put<AuthController>(AuthController(authRepo: authRepo), permanent: true);
   Get.put<NotificationController>(NotificationController(repository: instituteRepo), permanent: true);
   Get.put<StudentController>(StudentController(repository: instituteRepo), permanent: true);
@@ -61,9 +64,13 @@ class RadianceApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       defaultTransition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 150),
-      initialRoute: AppRoutes.login,
+      transitionDuration: const Duration(milliseconds: 250),
+      initialRoute: AppRoutes.splash,
       getPages: [
+        GetPage(
+          name: AppRoutes.splash,
+          page: () => const SplashView(),
+        ),
         GetPage(
           name: AppRoutes.login,
           page: () => const LoginView(),

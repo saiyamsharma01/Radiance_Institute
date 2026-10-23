@@ -11,7 +11,7 @@ abstract class IAuthRepository {
 }
 
 class AuthRepository implements IAuthRepository {
-  UserModel? _currentUser = MockDataSource.users.firstWhere((u) => u.role == UserRole.admin);
+  UserModel? _currentUser;
 
   @override
   UserModel? get currentUser => _currentUser;
