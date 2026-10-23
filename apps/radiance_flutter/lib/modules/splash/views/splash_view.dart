@@ -368,7 +368,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
               'RADIANCE',
               style: GoogleFonts.outfit(
                 fontSize: 32,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w800,
                 letterSpacing: 2.5,
                 color: Colors.white,
                 shadows: [
@@ -400,7 +400,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                 'PLUS',
                 style: GoogleFonts.outfit(
                   fontSize: 10,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w800,
                   color: const Color(0xFF172B4D),
                   letterSpacing: 1.0,
                 ),
