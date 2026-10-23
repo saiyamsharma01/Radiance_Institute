@@ -3,6 +3,7 @@ class AppRoutes {
   AppRoutes._();
 
   static const String splash = '/';
+  static const String intro = '/intro';
   static const String login = '/login';
   static const String parentOtp = '/parent-otp';
 

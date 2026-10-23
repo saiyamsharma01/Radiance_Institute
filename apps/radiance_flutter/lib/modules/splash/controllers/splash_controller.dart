@@ -127,7 +127,7 @@ class SplashController extends GetxController with GetSingleTickerProviderStateM
     if (currentUser != null) {
       _routeForRole(currentUser.role);
     } else {
-      Get.offAllNamed(AppRoutes.login);
+      Get.offAllNamed(AppRoutes.intro);
     }
   }
 
