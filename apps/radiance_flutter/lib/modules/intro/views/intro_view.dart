@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/widgets/radiance_logo_badge.dart';
 import '../controllers/intro_controller.dart';
 
 class IntroView extends GetView<IntroController> {
@@ -74,31 +75,7 @@ class IntroView extends GetView<IntroController> {
           // Left: Crest & Brand Title
           Row(
             children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.accentGold, width: 1.5),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primaryRoyalBlue.withValues(alpha: 0.15),
-                      blurRadius: 6,
-                    ),
-                  ],
-                ),
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/radiance_logo.jpg',
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => const Icon(
-                      Icons.school_rounded,
-                      color: AppColors.primaryRoyalBlue,
-                      size: 24,
-                    ),
-                  ),
-                ),
-              ),
+              const RadianceLogoBadge(size: 40),
               const SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

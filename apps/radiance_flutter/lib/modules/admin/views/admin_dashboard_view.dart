@@ -7,6 +7,7 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/widgets/radiance_button.dart';
 import '../../../core/widgets/radiance_card.dart';
+import '../../../core/widgets/radiance_logo_badge.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../data/models/user_model.dart';
 import '../../auth/controllers/auth_controller.dart';
@@ -92,16 +93,7 @@ class AdminDashboardView extends GetView<AdminController> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Row(
                 children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF3C4C89),
-                      shape: BoxShape.circle,
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: Image.asset('assets/images/radiance_logo.jpg', fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.school, color: AppColors.primaryRoyalBlue)),
-                  ),
+                  const RadianceLogoBadge(size: 40),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(

@@ -6,6 +6,7 @@ import '../../../core/constants/app_routes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/widgets/radiance_button.dart';
 import '../../../core/widgets/radiance_card.dart';
+import '../../../core/widgets/radiance_logo_badge.dart';
 import '../../../data/models/user_model.dart';
 import '../controllers/auth_controller.dart';
 
@@ -69,43 +70,8 @@ class LoginView extends GetView<AuthController> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       // Branded Crest Header
-                      Center(
-                        child: Container(
-                          width: 88,
-                          height: 88,
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: const LinearGradient(
-                              colors: [AppColors.accentGold, AppColors.primaryRoyalBlue],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.primaryRoyalBlue.withOpacity(0.2),
-                                blurRadius: 18,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
-                          ),
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              color: Color(0xFF3C4C89),
-                              shape: BoxShape.circle,
-                            ),
-                            clipBehavior: Clip.antiAlias,
-                            child: Image.asset(
-                              'assets/images/radiance_logo.jpg',
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => const Icon(
-                                Icons.school,
-                                size: 44,
-                                color: AppColors.primaryRoyalBlue,
-                              ),
-                            ),
-                          ),
-                        ),
+                      const Center(
+                        child: RadianceLogoBadge(size: 88, borderWidth: 3.5),
                       ),
                       const SizedBox(height: 14),
 

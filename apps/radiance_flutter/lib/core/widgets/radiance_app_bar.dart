@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_routes.dart';
+import 'radiance_logo_badge.dart';
 import '../../data/models/user_model.dart';
 import '../../modules/auth/controllers/auth_controller.dart';
 import '../../modules/common/controllers/notification_controller.dart';
@@ -57,39 +58,10 @@ class RadianceAppBar extends StatelessWidget implements PreferredSizeWidget {
                   onPressed: () => Navigator.of(context).maybePop(),
                 )
               else
-                // Official Radiance Institute logo brand mark
-                Padding(
-                  padding: const EdgeInsets.only(left: 4, right: 6),
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF3C4C89),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                      border: Border.all(
-                        color: AppColors.pureWhite.withOpacity(0.4),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: ClipOval(
-                      child: Image.asset(
-                        'assets/images/radiance_logo.jpg',
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => const Icon(
-                          Icons.school,
-                          color: AppColors.primaryRoyalBlue,
-                          size: 22,
-                        ),
-                      ),
-                    ),
-                  ),
+                // Official Radiance Institute logo brand mark with signature golden-royal rim
+                const Padding(
+                  padding: EdgeInsets.only(left: 4, right: 8),
+                  child: RadianceLogoBadge(size: 38),
                 ),
               Expanded(
                 child: Column(
@@ -114,7 +86,7 @@ class RadianceAppBar extends StatelessWidget implements PreferredSizeWidget {
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.inter(
                           fontSize: 11,
-                          color: AppColors.lightBlueBackground.withOpacity(0.9),
+                          color: AppColors.lightBlueBackground.withValues(alpha: 0.9),
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -127,9 +99,9 @@ class RadianceAppBar extends StatelessWidget implements PreferredSizeWidget {
                   icon: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.pureWhite.withOpacity(0.18),
+                      color: AppColors.pureWhite.withValues(alpha: 0.18),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: AppColors.pureWhite.withOpacity(0.25), width: 1),
+                      border: Border.all(color: AppColors.pureWhite.withValues(alpha: 0.25), width: 1),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
