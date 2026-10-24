@@ -54,7 +54,6 @@ class AdminDashboardView extends GetView<AdminController> {
             child: Column(
               children: [
                 _buildTopHeader(isDesktop, onBack: handleAdminBack),
-                if (!isDesktop) _buildMobileCategoryPills(),
                 Expanded(
                   child: Obx(() {
                     if (controller.isLoading.value && controller.students.isEmpty) {
@@ -85,20 +84,67 @@ class AdminDashboardView extends GetView<AdminController> {
       ),
       bottomNavigationBar: isDesktop
           ? null
-          : Obx(() => BottomNavigationBar(
-                currentIndex: controller.selectedNavIndex.value > 4 ? 0 : controller.selectedNavIndex.value,
-                onTap: (index) => controller.selectedNavIndex.value = index,
-                selectedItemColor: AppColors.primaryRoyalBlue,
-                unselectedItemColor: AppColors.textMuted,
-                type: BottomNavigationBarType.fixed,
-                items: const [
-                  BottomNavigationBarItem(icon: Icon(Icons.dashboard_outlined), label: 'Overview'),
-                  BottomNavigationBarItem(icon: Icon(Icons.contact_mail_outlined), label: 'CRM'),
-                  BottomNavigationBarItem(icon: Icon(Icons.people_outline), label: 'Students'),
-                  BottomNavigationBarItem(icon: Icon(Icons.layers_outlined), label: 'Batches'),
-                  BottomNavigationBarItem(icon: Icon(Icons.account_balance_outlined), label: 'Fees'),
-                ],
-              )),
+          : Obx(() {
+              final idx = controller.selectedNavIndex.value;
+              return Container(
+                decoration: const BoxDecoration(
+                  color: AppColors.pureWhite,
+                  border: Border(top: BorderSide(color: AppColors.borderSubtle)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0x0C000000),
+                      blurRadius: 10,
+                      offset: Offset(0, -2),
+                    ),
+                  ],
+                ),
+                child: BottomNavigationBar(
+                  currentIndex: idx > 4 ? 0 : idx,
+                  onTap: (index) => controller.selectedNavIndex.value = index,
+                  selectedItemColor: AppColors.primaryRoyalBlue,
+                  unselectedItemColor: AppColors.textMuted,
+                  selectedLabelStyle: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w700),
+                  unselectedLabelStyle: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w500),
+                  backgroundColor: AppColors.pureWhite,
+                  elevation: 0,
+                  type: BottomNavigationBarType.fixed,
+                  items: [
+                    const BottomNavigationBarItem(
+                      icon: Icon(Icons.dashboard_rounded),
+                      activeIcon: Icon(Icons.dashboard_rounded, color: AppColors.primaryRoyalBlue),
+                      label: 'Overview',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Badge(
+                        isLabelVisible: controller.newEnquiriesCount > 0,
+                        backgroundColor: AppColors.accentGold,
+                        label: Text(
+                          '${controller.newEnquiriesCount}',
+                          style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.w700, color: AppColors.deepNavy),
+                        ),
+                        child: const Icon(Icons.contact_mail_rounded),
+                      ),
+                      label: 'CRM',
+                    ),
+                    const BottomNavigationBarItem(
+                      icon: Icon(Icons.people_alt_rounded),
+                      activeIcon: Icon(Icons.people_alt_rounded, color: AppColors.primaryRoyalBlue),
+                      label: 'Students',
+                    ),
+                    const BottomNavigationBarItem(
+                      icon: Icon(Icons.layers_rounded),
+                      activeIcon: Icon(Icons.layers_rounded, color: AppColors.primaryRoyalBlue),
+                      label: 'Batches',
+                    ),
+                    const BottomNavigationBarItem(
+                      icon: Icon(Icons.account_balance_wallet_rounded),
+                      activeIcon: Icon(Icons.account_balance_wallet_rounded, color: AppColors.primaryRoyalBlue),
+                      label: 'Fees',
+                    ),
+                  ],
+                ),
+              );
+            }),
       ),
     );
   }
@@ -274,8 +320,8 @@ class AdminDashboardView extends GetView<AdminController> {
 
   Widget _buildTopHeader(bool isDesktop, {VoidCallback? onBack}) {
     return Container(
-      height: 64,
-      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 24 : 10),
+      height: 62,
+      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 24 : 12),
       decoration: const BoxDecoration(
         color: AppColors.pureWhite,
         border: Border(bottom: BorderSide(color: AppColors.borderSubtle)),
@@ -290,29 +336,47 @@ class AdminDashboardView extends GetView<AdminController> {
             ),
             Builder(
               builder: (ctx) => IconButton(
-                icon: const Icon(Icons.menu_open_rounded, color: AppColors.deepNavy, size: 22),
+                icon: const Icon(Icons.menu_rounded, color: AppColors.deepNavy, size: 22),
                 tooltip: 'All Sections',
                 onPressed: () => Scaffold.of(ctx).openDrawer(),
               ),
             ),
-            const SizedBox(width: 2),
+            const SizedBox(width: 4),
           ],
+          const RadianceLogoBadge(size: 32),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  isDesktop ? 'Institute Governance & Operations' : 'Admin Portal',
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.outfit(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.deepNavy,
-                  ),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        isDesktop ? 'Institute Governance & Operations' : 'Admin Console',
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.outfit(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.deepNavy,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Container(
+                      width: 7,
+                      height: 7,
+                      decoration: const BoxDecoration(
+                        color: AppColors.success,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ],
                 ),
                 Text(
-                  isDesktop ? 'Radiance Executive Governance • Real-Time Systems' : 'Governance & Admissions',
+                  isDesktop ? 'Radiance Executive Governance • Real-Time Systems' : 'Amritsar Campus • Super Admin',
+                  overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.inter(
                     fontSize: 11,
                     color: AppColors.textMuted,
@@ -327,7 +391,7 @@ class AdminDashboardView extends GetView<AdminController> {
               decoration: BoxDecoration(
                 color: AppColors.lightBlueBackground,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.primaryRoyalBlue.withOpacity(0.2)),
+                border: Border.all(color: AppColors.primaryRoyalBlue.withValues(alpha: 0.2)),
               ),
               child: Row(
                 children: [
@@ -348,13 +412,24 @@ class AdminDashboardView extends GetView<AdminController> {
           ],
           Container(
             decoration: BoxDecoration(
-              color: AppColors.lightBlueBackground.withOpacity(0.6),
+              color: AppColors.lightBlueBackground.withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(10),
             ),
             child: IconButton(
-              icon: const Icon(Icons.sync, color: AppColors.primaryRoyalBlue, size: 19),
+              icon: const Icon(Icons.refresh_rounded, color: AppColors.primaryRoyalBlue, size: 20),
               tooltip: 'Sync Data',
-              onPressed: controller.loadAllAdminData,
+              onPressed: () {
+                controller.loadAllAdminData();
+                Get.snackbar(
+                  'Database Synchronized',
+                  'Live data refreshed with official institute records.',
+                  backgroundColor: AppColors.deepNavy,
+                  colorText: AppColors.pureWhite,
+                  snackPosition: SnackPosition.BOTTOM,
+                  duration: const Duration(seconds: 2),
+                  margin: const EdgeInsets.all(12),
+                );
+              },
             ),
           ),
         ],
@@ -362,98 +437,7 @@ class AdminDashboardView extends GetView<AdminController> {
     );
   }
 
-  Widget _buildMobileCategoryPills() {
-    final tabs = [
-      {'title': 'Overview', 'icon': Icons.dashboard_outlined, 'index': 0},
-      {'title': 'CRM Pipeline', 'icon': Icons.contact_mail_outlined, 'index': 1, 'badge': controller.newEnquiriesCount},
-      {'title': 'Students', 'icon': Icons.people_outline, 'index': 2},
-      {'title': 'Batches', 'icon': Icons.layers_outlined, 'index': 3},
-      {'title': 'Fee Ledger', 'icon': Icons.account_balance_outlined, 'index': 4},
-      {'title': 'Audit Logs', 'icon': Icons.security_outlined, 'index': 5},
-    ];
 
-    return Container(
-      height: 48,
-      decoration: const BoxDecoration(
-        color: AppColors.pureWhite,
-        border: Border(bottom: BorderSide(color: AppColors.borderSubtle)),
-      ),
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        scrollDirection: Axis.horizontal,
-        itemCount: tabs.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
-        itemBuilder: (context, i) {
-          final tab = tabs[i];
-          final idx = tab['index'] as int;
-          return Obx(() {
-            final isSelected = controller.selectedNavIndex.value == idx;
-            final badge = tab['badge'] as int? ?? 0;
-
-            return InkWell(
-              onTap: () => controller.selectedNavIndex.value = idx,
-              borderRadius: BorderRadius.circular(20),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                decoration: BoxDecoration(
-                  gradient: isSelected
-                      ? const LinearGradient(
-                          colors: [AppColors.deepNavy, AppColors.primaryRoyalBlue],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        )
-                      : null,
-                  color: isSelected ? null : AppColors.lightBlueBackground.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: isSelected ? AppColors.primaryRoyalBlue : AppColors.borderSubtle,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      tab['icon'] as IconData,
-                      size: 14,
-                      color: isSelected ? AppColors.pureWhite : AppColors.deepNavy,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      tab['title'] as String,
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                        color: isSelected ? AppColors.pureWhite : AppColors.textPrimary,
-                      ),
-                    ),
-                    if (badge > 0) ...[
-                      const SizedBox(width: 6),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                        decoration: BoxDecoration(
-                          color: isSelected ? AppColors.accentGold : AppColors.primaryRoyalBlue,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          '$badge',
-                          style: GoogleFonts.inter(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.pureWhite,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            );
-          });
-        },
-      ),
-    );
-  }
 
   // 1. Overview Screen
   Widget _buildOverviewView() {
@@ -474,7 +458,7 @@ class AdminDashboardView extends GetView<AdminController> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryRoyalBlue.withOpacity(0.22),
+                  color: AppColors.primaryRoyalBlue.withValues(alpha: 0.22),
                   blurRadius: 14,
                   offset: const Offset(0, 4),
                 ),
@@ -495,7 +479,7 @@ class AdminDashboardView extends GetView<AdminController> {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(
-                                  color: AppColors.pureWhite.withOpacity(0.18),
+                                  color: AppColors.pureWhite.withValues(alpha: 0.18),
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(color: Colors.white24),
                                 ),
@@ -542,42 +526,54 @@ class AdminDashboardView extends GetView<AdminController> {
                   ],
                 ),
                 const SizedBox(height: 14),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    _buildHeroActionChip(
-                      icon: Icons.person_add_alt_1,
-                      label: 'Record Enquiry',
-                      onTap: () => _showEnquiryCreationDialog(Get.context!),
-                    ),
-                    _buildHeroActionChip(
-                      icon: Icons.add_circle_outline,
-                      label: 'Create Batch',
-                      onTap: () => _showBatchCreationDialog(Get.context!),
-                    ),
-                    _buildHeroActionChip(
-                      icon: Icons.receipt_long,
-                      label: 'Issue Invoice',
-                      onTap: () => _showInvoiceCreationDialog(Get.context!),
-                    ),
-                  ],
-                ),
+                LayoutBuilder(builder: (context, constraints) {
+                  final isWide = constraints.maxWidth > 550;
+                  return GridView.count(
+                    crossAxisCount: isWide ? 4 : 2,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                    childAspectRatio: isWide ? 2.6 : 2.4,
+                    children: [
+                      _buildHeroActionChip(
+                        icon: Icons.person_add_alt_1_rounded,
+                        label: 'New Enquiry',
+                        onTap: () => _showEnquiryCreationDialog(Get.context!),
+                      ),
+                      _buildHeroActionChip(
+                        icon: Icons.add_circle_outline_rounded,
+                        label: 'Create Batch',
+                        onTap: () => _showBatchCreationDialog(Get.context!),
+                      ),
+                      _buildHeroActionChip(
+                        icon: Icons.receipt_long_rounded,
+                        label: 'Issue Invoice',
+                        onTap: () => _showInvoiceCreationDialog(Get.context!),
+                      ),
+                      _buildHeroActionChip(
+                        icon: Icons.security_rounded,
+                        label: 'Audit Logs',
+                        onTap: () => controller.selectedNavIndex.value = 5,
+                      ),
+                    ],
+                  );
+                }),
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 18),
 
           // 4 Core High-Level Metric Tiles (Responsive Grid)
           LayoutBuilder(builder: (context, constraints) {
             final isWide = constraints.maxWidth > 700;
             return GridView.count(
               crossAxisCount: isWide ? 4 : 2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              childAspectRatio: isWide ? 1.55 : 1.25,
+              childAspectRatio: isWide ? 1.55 : 1.35,
               children: [
                 _buildKpiCard(
                   icon: Icons.people_alt_outlined,
@@ -779,23 +775,27 @@ class AdminDashboardView extends GetView<AdminController> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(10),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
         decoration: BoxDecoration(
-          color: AppColors.pureWhite.withOpacity(0.18),
+          color: AppColors.pureWhite.withValues(alpha: 0.18),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: Colors.white30),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 15, color: AppColors.pureWhite),
+            Icon(icon, size: 15, color: AppColors.accentGold),
             const SizedBox(width: 6),
-            Text(
-              label,
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: AppColors.pureWhite,
+            Flexible(
+              child: Text(
+                label,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.pureWhite,
+                ),
               ),
             ),
           ],
@@ -1221,7 +1221,7 @@ class AdminDashboardView extends GetView<AdminController> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: AppColors.primaryRoyalBlue.withOpacity(0.1),
+                            color: AppColors.primaryRoyalBlue.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -1495,16 +1495,16 @@ class AdminDashboardView extends GetView<AdminController> {
       decoration: BoxDecoration(
         color: AppColors.pureWhite,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: color.withOpacity(0.2)),
+        border: Border.all(color: color.withValues(alpha: 0.22)),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.08),
+            color: color.withValues(alpha: 0.08),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
         ],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1515,15 +1515,15 @@ class AdminDashboardView extends GetView<AdminController> {
               Container(
                 padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.12),
+                  color: color.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(icon, size: 20, color: color),
+                child: Icon(icon, size: 19, color: color),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.08),
+                  color: color.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -1538,7 +1538,7 @@ class AdminDashboardView extends GetView<AdminController> {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           Flexible(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1550,7 +1550,7 @@ class AdminDashboardView extends GetView<AdminController> {
                   child: Text(
                     value,
                     style: GoogleFonts.outfit(
-                      fontSize: 19,
+                      fontSize: 20,
                       fontWeight: FontWeight.w800,
                       color: AppColors.deepNavy,
                     ),
@@ -1563,7 +1563,7 @@ class AdminDashboardView extends GetView<AdminController> {
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.inter(
                     fontSize: 11,
-                    color: AppColors.textMuted,
+                    color: AppColors.textSecondary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
