@@ -320,119 +320,158 @@ class AdminDashboardView extends GetView<AdminController> {
 
   Widget _buildTopHeader(bool isDesktop, {VoidCallback? onBack}) {
     return Container(
-      height: 62,
-      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 24 : 12),
-      decoration: const BoxDecoration(
-        color: AppColors.pureWhite,
-        border: Border(bottom: BorderSide(color: AppColors.borderSubtle)),
-      ),
-      child: Row(
-        children: [
-          if (!isDesktop) ...[
-            IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.deepNavy, size: 18),
-              tooltip: 'Back',
-              onPressed: onBack ?? () => Get.back(),
-            ),
-            Builder(
-              builder: (ctx) => IconButton(
-                icon: const Icon(Icons.menu_rounded, color: AppColors.deepNavy, size: 22),
-                tooltip: 'All Sections',
-                onPressed: () => Scaffold.of(ctx).openDrawer(),
-              ),
-            ),
-            const SizedBox(width: 4),
-          ],
-          const RadianceLogoBadge(size: 32),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    Flexible(
-                      child: Text(
-                        isDesktop ? 'Institute Governance & Operations' : 'Admin Console',
+      color: AppColors.pureWhite,
+      child: SafeArea(
+        bottom: false,
+        child: Container(
+          height: 62,
+          padding: EdgeInsets.symmetric(horizontal: isDesktop ? 24 : 10),
+          decoration: const BoxDecoration(
+            color: AppColors.pureWhite,
+            border: Border(bottom: BorderSide(color: AppColors.borderSubtle)),
+          ),
+          child: Row(
+            children: [
+              if (!isDesktop) ...[
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.deepNavy, size: 18),
+                  tooltip: 'Back',
+                  onPressed: onBack ?? () => Get.back(),
+                ),
+                Builder(
+                  builder: (ctx) => IconButton(
+                    icon: const Icon(Icons.menu_rounded, color: AppColors.deepNavy, size: 22),
+                    tooltip: 'All Sections',
+                    onPressed: () => Scaffold.of(ctx).openDrawer(),
+                  ),
+                ),
+                const SizedBox(width: 2),
+              ],
+              const RadianceLogoBadge(size: 32),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Obx(() {
+                  final idx = controller.selectedNavIndex.value;
+                  String sectionTitle;
+                  String sectionSubtitle;
+                  switch (idx) {
+                    case 1:
+                      sectionTitle = 'Admissions CRM';
+                      sectionSubtitle = 'Pipeline & Enquiries';
+                      break;
+                    case 2:
+                      sectionTitle = 'Student Accounts';
+                      sectionSubtitle = 'Enrolments & Profiles';
+                      break;
+                    case 3:
+                      sectionTitle = 'Academic Batches';
+                      sectionSubtitle = 'Batches & Faculty';
+                      break;
+                    case 4:
+                      sectionTitle = 'Fee Management';
+                      sectionSubtitle = 'Invoicing & Ledgers';
+                      break;
+                    case 5:
+                      sectionTitle = 'Security & Audit';
+                      sectionSubtitle = 'Activity Logs';
+                      break;
+                    case 0:
+                    default:
+                      sectionTitle = isDesktop ? 'Institute Governance & Operations' : 'Admin Console';
+                      sectionSubtitle = 'Amritsar Campus • Super Admin';
+                      break;
+                  }
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              sectionTitle,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.outfit(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.deepNavy,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Container(
+                            width: 7,
+                            height: 7,
+                            decoration: const BoxDecoration(
+                              color: AppColors.success,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        sectionSubtitle,
                         overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.outfit(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.deepNavy,
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          color: AppColors.textMuted,
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 6),
-                    Container(
-                      width: 7,
-                      height: 7,
-                      decoration: const BoxDecoration(
-                        color: AppColors.success,
-                        shape: BoxShape.circle,
+                    ],
+                  );
+                }),
+              ),
+              if (isDesktop) ...[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: AppColors.lightBlueBackground,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: AppColors.primaryRoyalBlue.withValues(alpha: 0.2)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.verified_user, size: 15, color: AppColors.primaryRoyalBlue),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Super Admin: Active',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primaryRoyalBlue,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                Text(
-                  isDesktop ? 'Radiance Executive Governance • Real-Time Systems' : 'Amritsar Campus • Super Admin',
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    color: AppColors.textMuted,
+                    ],
                   ),
                 ),
+                const SizedBox(width: 12),
               ],
-            ),
-          ),
-          if (isDesktop) ...[
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.lightBlueBackground,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.primaryRoyalBlue.withValues(alpha: 0.2)),
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.lightBlueBackground.withValues(alpha: 0.6),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.refresh_rounded, color: AppColors.primaryRoyalBlue, size: 20),
+                  tooltip: 'Sync Data',
+                  onPressed: () {
+                    controller.loadAllAdminData();
+                    Get.snackbar(
+                      'Database Synchronized',
+                      'Live data refreshed with official institute records.',
+                      backgroundColor: AppColors.deepNavy,
+                      colorText: AppColors.pureWhite,
+                      snackPosition: SnackPosition.BOTTOM,
+                      duration: const Duration(seconds: 2),
+                      margin: const EdgeInsets.all(12),
+                    );
+                  },
+                ),
               ),
-              child: Row(
-                children: [
-                  const Icon(Icons.verified_user, size: 15, color: AppColors.primaryRoyalBlue),
-                  const SizedBox(width: 6),
-                  Text(
-                    'Super Admin: Active',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primaryRoyalBlue,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 12),
-          ],
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.lightBlueBackground.withValues(alpha: 0.6),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: IconButton(
-              icon: const Icon(Icons.refresh_rounded, color: AppColors.primaryRoyalBlue, size: 20),
-              tooltip: 'Sync Data',
-              onPressed: () {
-                controller.loadAllAdminData();
-                Get.snackbar(
-                  'Database Synchronized',
-                  'Live data refreshed with official institute records.',
-                  backgroundColor: AppColors.deepNavy,
-                  colorText: AppColors.pureWhite,
-                  snackPosition: SnackPosition.BOTTOM,
-                  duration: const Duration(seconds: 2),
-                  margin: const EdgeInsets.all(12),
-                );
-              },
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -640,7 +679,7 @@ class AdminDashboardView extends GetView<AdminController> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: controller.enquiries.take(3).length,
-                    separatorBuilder: (_, __) => const Divider(height: 16),
+                    separatorBuilder: (_, _) => const Divider(height: 16),
                     itemBuilder: (context, index) {
                       final enq = controller.enquiries[index];
                       return Row(
@@ -888,7 +927,7 @@ class AdminDashboardView extends GetView<AdminController> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: list.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                separatorBuilder: (_, _) => const SizedBox(height: 10),
                 itemBuilder: (context, index) {
                   final enq = list[index];
                   return RadianceCard(
@@ -1072,7 +1111,7 @@ class AdminDashboardView extends GetView<AdminController> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: list.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                separatorBuilder: (_, _) => const SizedBox(height: 10),
                 itemBuilder: (context, index) {
                   final s = list[index];
                   return RadianceCard(
@@ -1184,7 +1223,7 @@ class AdminDashboardView extends GetView<AdminController> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: controller.batches.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            separatorBuilder: (_, _) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final b = controller.batches[index];
               return RadianceCard(
@@ -1328,7 +1367,7 @@ class AdminDashboardView extends GetView<AdminController> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: list.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                separatorBuilder: (_, _) => const SizedBox(height: 10),
                 itemBuilder: (context, index) {
                   final inv = list[index];
                   return RadianceCard(
@@ -1425,7 +1464,7 @@ class AdminDashboardView extends GetView<AdminController> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: logs.length,
-                separatorBuilder: (_, __) => const Divider(height: 16),
+                separatorBuilder: (_, _) => const Divider(height: 16),
                 itemBuilder: (context, index) {
                   final log = logs[index];
                   final formattedDate = DateFormat('dd MMM, hh:mm a').format(log.timestamp);
@@ -1635,7 +1674,7 @@ class AdminDashboardView extends GetView<AdminController> {
             children: [
               Obx(() => DropdownButtonFormField<String>(
                     isExpanded: true,
-                    value: controller.invoiceStudentId.value.isNotEmpty ? controller.invoiceStudentId.value : null,
+                    initialValue: controller.invoiceStudentId.value.isNotEmpty ? controller.invoiceStudentId.value : null,
                     decoration: const InputDecoration(labelText: 'Select Student'),
                     items: controller.students.map((s) {
                       return DropdownMenuItem(
