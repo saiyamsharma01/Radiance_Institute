@@ -7,7 +7,6 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/widgets/radiance_button.dart';
 import '../../../core/widgets/radiance_card.dart';
 import '../../../core/widgets/radiance_logo_badge.dart';
-import '../../../data/models/user_model.dart';
 import '../controllers/auth_controller.dart';
 
 class LoginView extends GetView<AuthController> {
@@ -18,29 +17,7 @@ class LoginView extends GetView<AuthController> {
     final isDesktop = MediaQuery.of(context).size.width > 900;
     final isPasswordVisible = false.obs;
     final selectedTab = 0.obs; // 0: Super Admin, 1: Academic (Student/Faculty), 2: Parent OTP
-
-    void autoFillAdmin() {
-      controller.emailOrPhoneController.text = 'admin@radiance.edu.in';
-      controller.passwordController.text = 'admin123';
-      controller.errorMessage.value = '';
-    }
-
-    void autoFillStudent() {
-      controller.emailOrPhoneController.text = 'student@radiance.edu.in';
-      controller.passwordController.text = 'student123';
-      controller.errorMessage.value = '';
-    }
-
-    void autoFillTeacher() {
-      controller.emailOrPhoneController.text = 'teacher@radiance.edu.in';
-      controller.passwordController.text = 'teacher123';
-      controller.errorMessage.value = '';
-    }
-
-    // Default to admin credentials for swift executive access
-    if (controller.emailOrPhoneController.text.isEmpty) {
-      autoFillAdmin();
-    }
+    final rememberMe = true.obs;
 
     void handleBack() {
       if (Get.key.currentState?.canPop() ?? false) {
@@ -225,7 +202,7 @@ class LoginView extends GetView<AuthController> {
                                     isSelected: selectedTab.value == 0,
                                     onTap: () {
                                       selectedTab.value = 0;
-                                      autoFillAdmin();
+                                      controller.errorMessage.value = '';
                                     },
                                   ),
                                   _buildRoleTab(
@@ -234,14 +211,17 @@ class LoginView extends GetView<AuthController> {
                                     isSelected: selectedTab.value == 1,
                                     onTap: () {
                                       selectedTab.value = 1;
-                                      autoFillStudent();
+                                      controller.errorMessage.value = '';
                                     },
                                   ),
                                   _buildRoleTab(
                                     label: 'Parent OTP',
                                     icon: Icons.phone_iphone_rounded,
                                     isSelected: selectedTab.value == 2,
-                                    onTap: () => selectedTab.value = 2,
+                                    onTap: () {
+                                      selectedTab.value = 2;
+                                      controller.errorMessage.value = '';
+                                    },
                                   ),
                                 ],
                               ),
@@ -427,47 +407,7 @@ class LoginView extends GetView<AuthController> {
                                 ),
                                 const Divider(height: 22),
 
-                                // Quick Fill Hint Chip for instant testing
-                                Container(
-                                  margin: const EdgeInsets.only(bottom: 14),
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.lightBlueBackground,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: AppColors.primaryRoyalBlue.withValues(alpha: 0.2)),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.flash_on_rounded, size: 14, color: AppColors.primaryRoyalBlue),
-                                      const SizedBox(width: 6),
-                                      Expanded(
-                                        child: Text(
-                                          isAdmin
-                                              ? 'Demo Admin credentials active for one-tap sign-in'
-                                              : 'Click to auto-fill sample test accounts:',
-                                          style: GoogleFonts.inter(fontSize: 11, color: AppColors.deepNavy, fontWeight: FontWeight.w500),
-                                        ),
-                                      ),
-                                      if (!isAdmin) ...[
-                                        GestureDetector(
-                                          onTap: autoFillStudent,
-                                          child: Text(
-                                            'Student',
-                                            style: GoogleFonts.inter(fontSize: 11, color: AppColors.primaryRoyalBlue, fontWeight: FontWeight.w700),
-                                          ),
-                                        ),
-                                        const Text(' • ', style: TextStyle(color: AppColors.textMuted)),
-                                        GestureDetector(
-                                          onTap: autoFillTeacher,
-                                          child: Text(
-                                            'Teacher',
-                                            style: GoogleFonts.inter(fontSize: 11, color: AppColors.primaryRoyalBlue, fontWeight: FontWeight.w700),
-                                          ),
-                                        ),
-                                      ],
-                                    ],
-                                  ),
-                                ),
+                                const SizedBox(height: 4),
 
                                 // Username / Email input
                                 TextField(
@@ -532,6 +472,130 @@ class LoginView extends GetView<AuthController> {
                                     )),
                                 const SizedBox(height: 12),
 
+                                const SizedBox(height: 8),
+
+                                // Remember Me & Forgot Password Row
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Obx(() => InkWell(
+                                          onTap: () => rememberMe.value = !rememberMe.value,
+                                          borderRadius: BorderRadius.circular(6),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 4),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                SizedBox(
+                                                  height: 18,
+                                                  width: 18,
+                                                  child: Checkbox(
+                                                    value: rememberMe.value,
+                                                    onChanged: (v) => rememberMe.value = v ?? false,
+                                                    activeColor: AppColors.primaryRoyalBlue,
+                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 6),
+                                                Text(
+                                                  'Remember me',
+                                                  style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary, fontWeight: FontWeight.w500),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        )),
+                                    TextButton(
+                                      onPressed: () {
+                                        Get.dialog(
+                                          Dialog(
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(22),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        padding: const EdgeInsets.all(8),
+                                                        decoration: BoxDecoration(
+                                                          color: AppColors.lightBlueBackground,
+                                                          borderRadius: BorderRadius.circular(10),
+                                                        ),
+                                                        child: const Icon(Icons.help_outline, color: AppColors.primaryRoyalBlue, size: 22),
+                                                      ),
+                                                      const SizedBox(width: 12),
+                                                      Expanded(
+                                                        child: Text(
+                                                          'Credential Helpdesk',
+                                                          style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.deepNavy),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(height: 14),
+                                                  Text(
+                                                    'For security and student record safety, login passwords are administered by the Radiance Campus IT / Admin Desk.',
+                                                    style: GoogleFonts.inter(fontSize: 13, color: AppColors.textPrimary, height: 1.45),
+                                                  ),
+                                                  const SizedBox(height: 12),
+                                                  Container(
+                                                    padding: const EdgeInsets.all(12),
+                                                    decoration: BoxDecoration(
+                                                      color: AppColors.lightBlueBackground.withValues(alpha: 0.5),
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      border: Border.all(color: AppColors.borderSubtle),
+                                                    ),
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text('📞 Campus Helpline: ${AppStrings.phone}', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.deepNavy)),
+                                                        const SizedBox(height: 4),
+                                                        Text('📧 IT Helpdesk: admin@radiance.edu.in', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.deepNavy)),
+                                                        const SizedBox(height: 4),
+                                                        Text('📍 Rani Ka Bagh, Amritsar', style: GoogleFonts.inter(fontSize: 12, color: AppColors.textMuted)),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 18),
+                                                  SizedBox(
+                                                    width: double.infinity,
+                                                    child: ElevatedButton(
+                                                      onPressed: () => Get.back(),
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor: AppColors.deepNavy,
+                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                                      ),
+                                                      child: Text('Understood', style: GoogleFonts.inter(color: AppColors.pureWhite, fontWeight: FontWeight.w600)),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      style: TextButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                                        minimumSize: Size.zero,
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                      child: Text(
+                                        'Forgot password?',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.primaryRoyalBlue,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+
                                 // Error message display
                                 Obx(() {
                                   if (controller.errorMessage.isEmpty) return const SizedBox.shrink();
@@ -564,7 +628,7 @@ class LoginView extends GetView<AuthController> {
 
                                 // Sign In Button
                                 Obx(() => RadianceButton(
-                                      label: isAdmin ? 'Enter Super Admin Console' : 'Sign In to Portal',
+                                      label: isAdmin ? 'Authenticate Administrator' : 'Sign In to Academic Portal',
                                       icon: isAdmin ? Icons.security_rounded : Icons.login_rounded,
                                       onPressed: controller.login,
                                       isLoading: controller.isLoading.value,
@@ -575,86 +639,67 @@ class LoginView extends GetView<AuthController> {
                         ),
                         const SizedBox(height: 18),
 
-                        // 3. Quick One-Tap Role Switcher (Executive Mobile Cards)
+                        // Enterprise Security & Campus Contact Card
                         Container(
-                          padding: const EdgeInsets.all(14),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                           decoration: BoxDecoration(
                             color: AppColors.pureWhite,
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(14),
                             border: Border.all(color: AppColors.borderSubtle),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.04),
-                                blurRadius: 10,
+                                color: Colors.black.withValues(alpha: 0.03),
+                                blurRadius: 8,
                                 offset: const Offset(0, 2),
                               ),
                             ],
                           ),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(5),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.accentGold.withValues(alpha: 0.15),
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        child: const Icon(Icons.bolt, size: 15, color: AppColors.accentGold),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        'INSTANT DEMO ACCESS',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w800,
-                                          letterSpacing: 0.6,
-                                          color: AppColors.deepNavy,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  const Icon(Icons.lock_outline_rounded, size: 15, color: AppColors.primaryRoyalBlue),
+                                  const SizedBox(width: 6),
                                   Text(
-                                    'One-Tap Login',
+                                    '256-Bit SSL Enterprise Protected',
                                     style: GoogleFonts.inter(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.textMuted,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.deepNavy,
+                                      letterSpacing: 0.3,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.success.withValues(alpha: 0.12),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Text(
+                                      'VERIFIED',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.w800,
+                                        color: AppColors.success,
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 12),
-
-                              // 4 Role Access Cards (Optimized 2-Column Responsive Layout)
-                              GridView.count(
-                                crossAxisCount: 2,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                crossAxisSpacing: 8,
-                                mainAxisSpacing: 8,
-                                childAspectRatio: 2.1,
-                                children: [
-                                  _buildRoleCard('Admin', 'Governance & CRM', Icons.admin_panel_settings_rounded, AppColors.deepNavy, UserRole.admin),
-                                  _buildRoleCard('Student', 'Academics & Tests', Icons.school_rounded, AppColors.primaryRoyalBlue, UserRole.student),
-                                  _buildRoleCard('Parent', 'Fees & Progress', Icons.family_restroom_rounded, AppColors.accentGold, UserRole.parent),
-                                  _buildRoleCard('Teacher', 'Faculty Console', Icons.psychology_rounded, AppColors.info, UserRole.teacher),
-                                ],
+                              const SizedBox(height: 8),
+                              Text(
+                                '${AppStrings.address}\nSupport Desk: ${AppStrings.phone} • Email: ${AppStrings.email}',
+                                style: GoogleFonts.inter(
+                                  fontSize: 11,
+                                  color: AppColors.textMuted,
+                                  height: 1.4,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
                             ],
                           ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Contact footer
-                        Text(
-                          '🔒 256-Bit SSL Encrypted Enterprise Portal\n${AppStrings.address} • Phone: ${AppStrings.phone}',
-                          style: GoogleFonts.inter(fontSize: 11, color: AppColors.textMuted, height: 1.45),
-                          textAlign: TextAlign.center,
                         ),
                       ],
                     ),
@@ -713,62 +758,6 @@ class LoginView extends GetView<AuthController> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRoleCard(String title, String subtitle, IconData icon, Color color, UserRole role) {
-    return InkWell(
-      onTap: () => controller.switchRole(role),
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.06),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withValues(alpha: 0.25)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.14),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(icon, color: color, size: 16),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.outfit(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.deepNavy,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.inter(
-                      fontSize: 10,
-                      color: AppColors.textMuted,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
         ),
       ),
     );

@@ -10,7 +10,6 @@ import '../../../core/widgets/radiance_button.dart';
 import '../../../core/widgets/radiance_card.dart';
 import '../../../core/widgets/radiance_logo_badge.dart';
 import '../../../core/widgets/status_badge.dart';
-import '../../../data/models/user_model.dart';
 import '../../auth/controllers/auth_controller.dart';
 import '../controllers/admin_controller.dart';
 
@@ -203,41 +202,7 @@ class AdminDashboardView extends GetView<AdminController> {
             const Spacer(),
             const Divider(color: Colors.white24, height: 1),
 
-            // Role quick-switch menu in drawer
-            if (isDrawer && Get.isRegistered<AuthController>()) ...[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Text('SWITCH PORTAL VIEW', style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w700, color: Colors.white54, letterSpacing: 0.5)),
-              ),
-              ListTile(
-                dense: true,
-                leading: const Icon(Icons.school_outlined, color: Colors.white70, size: 18),
-                title: Text('Student Portal', style: GoogleFonts.inter(fontSize: 12, color: Colors.white)),
-                onTap: () {
-                  Get.back();
-                  Get.find<AuthController>().switchRole(UserRole.student);
-                },
-              ),
-              ListTile(
-                dense: true,
-                leading: const Icon(Icons.family_restroom_outlined, color: Colors.white70, size: 18),
-                title: Text('Parent Portal', style: GoogleFonts.inter(fontSize: 12, color: Colors.white)),
-                onTap: () {
-                  Get.back();
-                  Get.find<AuthController>().switchRole(UserRole.parent);
-                },
-              ),
-              ListTile(
-                dense: true,
-                leading: const Icon(Icons.psychology_outlined, color: Colors.white70, size: 18),
-                title: Text('Faculty Portal', style: GoogleFonts.inter(fontSize: 12, color: Colors.white)),
-                onTap: () {
-                  Get.back();
-                  Get.find<AuthController>().switchRole(UserRole.teacher);
-                },
-              ),
-              const Divider(color: Colors.white24, height: 1),
-            ],
+
 
             ListTile(
               dense: true,

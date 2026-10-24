@@ -24,7 +24,7 @@ class RadianceAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.subtitle,
     this.actions,
     this.showNotification = true,
-    this.showRoleSwitcher = true,
+    this.showRoleSwitcher = false,
     this.showBackButton,
     this.onBack,
     this.onLogout,
