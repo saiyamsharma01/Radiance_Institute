@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "748715646117",
+    "project_id": "radiance-institute-amritsar",
+    "storage_bucket": "radiance-institute-amritsar.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:748715646117:android:58392dcb9b9b333f3c014c",
+        "android_client_info": {
+          "package_name": "com.example.radiance_institute"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPAH3Sz_qq3TLU814UHLkA3bKOxBQxl1g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
