@@ -60,7 +60,7 @@ class AuthController extends GetxController {
       errorMessage.value = '';
       final user = await authRepo.loginWithPhoneOtp(phone, otp);
       currentUser.value = user;
-      Get.offAllNamed(AppRoutes.parentDashboard);
+      Get.toNamed(AppRoutes.parentDashboard);
     } catch (e) {
       errorMessage.value = e.toString().replaceAll('Exception: ', '');
     } finally {
@@ -83,16 +83,16 @@ class AuthController extends GetxController {
     if (role == null) return;
     switch (role) {
       case UserRole.admin:
-        Get.offAllNamed(AppRoutes.adminDashboard);
+        Get.toNamed(AppRoutes.adminDashboard);
         break;
       case UserRole.student:
-        Get.offAllNamed(AppRoutes.studentDashboard);
+        Get.toNamed(AppRoutes.studentDashboard);
         break;
       case UserRole.parent:
-        Get.offAllNamed(AppRoutes.parentDashboard);
+        Get.toNamed(AppRoutes.parentDashboard);
         break;
       case UserRole.teacher:
-        Get.offAllNamed(AppRoutes.teacherDashboard);
+        Get.toNamed(AppRoutes.teacherDashboard);
         break;
     }
   }

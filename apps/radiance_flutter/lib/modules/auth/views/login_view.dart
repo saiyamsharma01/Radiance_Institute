@@ -18,49 +18,97 @@ class LoginView extends GetView<AuthController> {
     final isDesktop = MediaQuery.of(context).size.width > 900;
     final isPasswordVisible = false.obs;
 
-    return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
-      body: Stack(
-        children: [
-          // Ambient decorative background gradients
-          Positioned(
-            top: -120,
-            left: -80,
-            child: Container(
-              width: 320,
-              height: 320,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    AppColors.primaryRoyalBlue.withOpacity(0.12),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -100,
-            right: -60,
-            child: Container(
-              width: 300,
-              height: 300,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    AppColors.accentGold.withOpacity(0.08),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-          ),
+    void handleBack() {
+      if (Get.key.currentState?.canPop() ?? false) {
+        Get.back();
+      } else if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      } else {
+        Get.offAllNamed(AppRoutes.intro);
+      }
+    }
 
-          // Main Scrollable Content
-          SafeArea(
-            child: Center(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        handleBack();
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.backgroundLight,
+        body: Stack(
+          children: [
+            // Ambient decorative background gradients
+            Positioned(
+              top: -120,
+              left: -80,
+              child: Container(
+                width: 320,
+                height: 320,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      AppColors.primaryRoyalBlue.withValues(alpha: 0.12),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: -100,
+              right: -60,
+              child: Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      AppColors.accentGold.withValues(alpha: 0.08),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            // Top Back Navigation Button
+            SafeArea(
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: TextButton.icon(
+                    onPressed: handleBack,
+                    style: TextButton.styleFrom(
+                      backgroundColor: AppColors.pureWhite,
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        side: const BorderSide(color: AppColors.borderSubtle),
+                      ),
+                      elevation: 1,
+                      shadowColor: Colors.black.withValues(alpha: 0.08),
+                    ),
+                    icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 14, color: AppColors.deepNavy),
+                    label: Text(
+                      'Intro',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.deepNavy,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            // Main Scrollable Content
+            SafeArea(
+              child: Center(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                 child: ConstrainedBox(
@@ -386,7 +434,7 @@ class LoginView extends GetView<AuthController> {
           ),
         ],
       ),
-    );
+    ),);
   }
 
   Widget _buildRoleCard(String title, String subtitle, IconData icon, Color color, UserRole role) {

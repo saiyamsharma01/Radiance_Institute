@@ -14,36 +14,45 @@ class IntroView extends GetView<IntroController> {
     final size = MediaQuery.of(context).size;
     final isDesktop = size.width > 900;
 
-    return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // 1. Top Header with Logo Branding & Prominent Login Button on the side
-            _buildTopNavigationBar(context),
+    return Obx(
+      () => PopScope(
+        canPop: controller.currentPage.value == 0,
+        onPopInvokedWithResult: (didPop, _) {
+          if (didPop) return;
+          controller.previousPage();
+        },
+        child: Scaffold(
+          backgroundColor: AppColors.backgroundLight,
+          body: SafeArea(
+            child: Column(
+              children: [
+                // 1. Top Header with Logo Branding & Prominent Login Button on the side
+                _buildTopNavigationBar(context),
 
-            // 2. Main Dynamic Carousel Slider
-            Expanded(
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: isDesktop ? 600 : 440),
-                  child: PageView.builder(
-                    controller: controller.pageController,
-                    onPageChanged: controller.onPageChanged,
-                    itemCount: controller.slides.length,
-                    physics: const BouncingScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      final slide = controller.slides[index];
-                      return _buildSlideContent(context, slide, index);
-                    },
+                // 2. Main Dynamic Carousel Slider
+                Expanded(
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: isDesktop ? 600 : 440),
+                      child: PageView.builder(
+                        controller: controller.pageController,
+                        onPageChanged: controller.onPageChanged,
+                        itemCount: controller.slides.length,
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          final slide = controller.slides[index];
+                          return _buildSlideContent(context, slide, index);
+                        },
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
 
-            // 3. Bottom Dynamic Action Controls & Indicators
-            _buildBottomControls(context, isDesktop),
-          ],
+                // 3. Bottom Dynamic Action Controls & Indicators
+                _buildBottomControls(context, isDesktop),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -351,43 +360,72 @@ class IntroView extends GetView<IntroController> {
                     );
                   }),
 
-                  // Dynamic Action Button (Next or Sign In)
+                  // Dynamic Action Buttons (Back & Next/Enter Portal)
                   Obx(() {
-                    final isLast = controller.currentPage.value == controller.slides.length - 1;
+                    final current = controller.currentPage.value;
+                    final isLast = current == controller.slides.length - 1;
 
-                    return ElevatedButton(
-                      onPressed: controller.nextPage,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: isLast
-                            ? AppColors.primaryRoyalBlue
-                            : AppColors.deepNavy,
-                        foregroundColor: AppColors.pureWhite,
-                        elevation: 0,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: isLast ? 20 : 16,
-                          vertical: 12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            isLast ? 'Enter Portal' : 'Next',
-                            style: GoogleFonts.inter(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (current > 0)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: OutlinedButton.icon(
+                              onPressed: controller.previousPage,
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: AppColors.deepNavy,
+                                side: const BorderSide(color: AppColors.borderSubtle),
+                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 13),
+                              label: Text(
+                                'Back',
+                                style: GoogleFonts.inter(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                             ),
                           ),
-                          const SizedBox(width: 6),
-                          Icon(
-                            isLast ? Icons.arrow_forward_rounded : Icons.chevron_right_rounded,
-                            size: 18,
+                        ElevatedButton(
+                          onPressed: controller.nextPage,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: isLast
+                                ? AppColors.primaryRoyalBlue
+                                : AppColors.deepNavy,
+                            foregroundColor: AppColors.pureWhite,
+                            elevation: 0,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: isLast ? 20 : 16,
+                              vertical: 12,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
-                        ],
-                      ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                isLast ? 'Enter Portal' : 'Next',
+                                style: GoogleFonts.inter(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Icon(
+                                isLast ? Icons.arrow_forward_rounded : Icons.chevron_right_rounded,
+                                size: 18,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     );
                   }),
                 ],

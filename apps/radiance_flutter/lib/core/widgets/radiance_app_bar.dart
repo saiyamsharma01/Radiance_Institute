@@ -14,6 +14,8 @@ class RadianceAppBar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget>? actions;
   final bool showNotification;
   final bool showRoleSwitcher;
+  final bool? showBackButton;
+  final VoidCallback? onBack;
   final VoidCallback? onLogout;
 
   const RadianceAppBar({
@@ -23,14 +25,70 @@ class RadianceAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.showNotification = true,
     this.showRoleSwitcher = true,
+    this.showBackButton,
+    this.onBack,
     this.onLogout,
   });
 
   @override
   Size get preferredSize => const Size.fromHeight(64);
 
+  void _handleBack(BuildContext context) {
+    if (onBack != null) {
+      onBack!();
+      return;
+    }
+
+    if (Get.key.currentState?.canPop() ?? false) {
+      Get.back();
+      return;
+    }
+
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+      return;
+    }
+
+    // Contextual intelligent fallback if backstack was ever cleared
+    final currentRoute = Get.currentRoute;
+    if (currentRoute == AppRoutes.studentAttendance ||
+        currentRoute == AppRoutes.studentHomework ||
+        currentRoute == AppRoutes.studentTests ||
+        currentRoute == AppRoutes.studentFees) {
+      Get.offNamed(AppRoutes.studentDashboard);
+    } else if (currentRoute == AppRoutes.markAttendance ||
+               currentRoute == AppRoutes.createHomework) {
+      Get.offNamed(AppRoutes.teacherDashboard);
+    } else if (currentRoute == AppRoutes.parentChildLinking ||
+               currentRoute == AppRoutes.parentFees) {
+      Get.offNamed(AppRoutes.parentDashboard);
+    } else if (currentRoute == AppRoutes.notifications) {
+      final user = Get.isRegistered<AuthController>()
+          ? Get.find<AuthController>().currentUser.value
+          : null;
+      if (user?.role == UserRole.student) {
+        Get.offNamed(AppRoutes.studentDashboard);
+      } else if (user?.role == UserRole.teacher) {
+        Get.offNamed(AppRoutes.teacherDashboard);
+      } else if (user?.role == UserRole.parent) {
+        Get.offNamed(AppRoutes.parentDashboard);
+      } else if (user?.role == UserRole.admin) {
+        Get.offNamed(AppRoutes.adminDashboard);
+      } else {
+        Get.offNamed(AppRoutes.login);
+      }
+    } else {
+      Get.offNamed(AppRoutes.login);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final canPopNavigator = Navigator.of(context).canPop();
+    final canPopGet = Get.key.currentState?.canPop() ?? false;
+    final hasPrevious = Get.previousRoute.isNotEmpty && Get.previousRoute != AppRoutes.splash;
+    final shouldShowBack = showBackButton ?? (canPopNavigator || canPopGet || hasPrevious);
+
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -51,11 +109,11 @@ class RadianceAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
             children: [
-              if (Navigator.canPop(context))
+              if (shouldShowBack)
                 IconButton(
                   icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.pureWhite, size: 20),
                   tooltip: 'Back',
-                  onPressed: () => Navigator.of(context).maybePop(),
+                  onPressed: () => _handleBack(context),
                 )
               else
                 // Official Radiance Institute logo brand mark with signature golden-royal rim

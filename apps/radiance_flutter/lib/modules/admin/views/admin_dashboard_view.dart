@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_routes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/widgets/radiance_button.dart';
@@ -20,7 +21,27 @@ class AdminDashboardView extends GetView<AdminController> {
   Widget build(BuildContext context) {
     final isDesktop = MediaQuery.of(context).size.width >= 900;
 
-    return Scaffold(
+    void handleAdminBack() {
+      if (controller.selectedNavIndex.value != 0) {
+        controller.selectedNavIndex.value = 0;
+        return;
+      }
+      if (Get.key.currentState?.canPop() ?? false) {
+        Get.back();
+      } else if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      } else {
+        Get.offNamed(AppRoutes.login);
+      }
+    }
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        handleAdminBack();
+      },
+      child: Scaffold(
       backgroundColor: AppColors.backgroundLight,
       drawer: isDesktop ? null : Drawer(child: _buildSidebar(isDrawer: true)),
       body: Row(
@@ -32,7 +53,7 @@ class AdminDashboardView extends GetView<AdminController> {
           Expanded(
             child: Column(
               children: [
-                _buildTopHeader(isDesktop),
+                _buildTopHeader(isDesktop, onBack: handleAdminBack),
                 if (!isDesktop) _buildMobileCategoryPills(),
                 Expanded(
                   child: Obx(() {
@@ -78,6 +99,7 @@ class AdminDashboardView extends GetView<AdminController> {
                   BottomNavigationBarItem(icon: Icon(Icons.account_balance_outlined), label: 'Fees'),
                 ],
               )),
+      ),
     );
   }
 
@@ -250,7 +272,7 @@ class AdminDashboardView extends GetView<AdminController> {
     });
   }
 
-  Widget _buildTopHeader(bool isDesktop) {
+  Widget _buildTopHeader(bool isDesktop, {VoidCallback? onBack}) {
     return Container(
       height: 64,
       padding: EdgeInsets.symmetric(horizontal: isDesktop ? 24 : 10),
@@ -263,8 +285,8 @@ class AdminDashboardView extends GetView<AdminController> {
           if (!isDesktop) ...[
             IconButton(
               icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.deepNavy, size: 18),
-              tooltip: 'Exit Admin Portal',
-              onPressed: () => Get.back(),
+              tooltip: 'Back',
+              onPressed: onBack ?? () => Get.back(),
             ),
             Builder(
               builder: (ctx) => IconButton(
